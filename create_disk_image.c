@@ -1,7 +1,72 @@
+#include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkkeysyms-compat.h>
 
 #include "calvados.h"
+
+GtkWidget *allocateDOSTracksCb;
+GtkWidget *diskVolumeEntry;
+GtkWidget *prodosVolumeEntry;
+GtkWidget *pascalVolumeEntry;
+GtkWidget *hfsVolumeEntry;
+GtkWidget *blocksEntry;
+GtkWidget *blocksLabel;
+
+/*
+ *
+ * Grey out radio buttons, checkboxes and entries as appropriate
+ * for filesystem radio button group.
+ *
+ */
+void filesystemRbCallback(GtkWidget *widget, gpointer *data)
+{
+  if ((strcmp((char *)data, "dos32Rb") == 0) ||
+      (strcmp((char *)data, "dos33Rb") == 0)) {
+    gtk_widget_set_sensitive(allocateDOSTracksCb, TRUE);
+    gtk_widget_set_sensitive(diskVolumeEntry, TRUE);
+    gtk_widget_set_sensitive(prodosVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(pascalVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(hfsVolumeEntry, FALSE);
+  } else if (strcmp((char *)data, "prodosRb") == 0) {
+    gtk_widget_set_sensitive(allocateDOSTracksCb, FALSE);
+    gtk_widget_set_sensitive(diskVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(prodosVolumeEntry, TRUE);
+    gtk_widget_set_sensitive(pascalVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(hfsVolumeEntry, FALSE);
+  } else if (strcmp((char *)data, "pascalRb") == 0) {
+    gtk_widget_set_sensitive(allocateDOSTracksCb, FALSE);
+    gtk_widget_set_sensitive(diskVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(prodosVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(pascalVolumeEntry, TRUE);
+    gtk_widget_set_sensitive(hfsVolumeEntry, FALSE);
+  } else if (strcmp((char *)data, "hfsRb") == 0) {
+    gtk_widget_set_sensitive(allocateDOSTracksCb, FALSE);
+    gtk_widget_set_sensitive(diskVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(prodosVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(pascalVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(hfsVolumeEntry, TRUE);
+  } else if (strcmp((char *)data, "blankRb") == 0) {
+    gtk_widget_set_sensitive(allocateDOSTracksCb, FALSE);
+    gtk_widget_set_sensitive(diskVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(prodosVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(pascalVolumeEntry, FALSE);
+    gtk_widget_set_sensitive(hfsVolumeEntry, FALSE);
+  }
+}
+
+
+void newDiskSizeRbCallback(GtkWidget *widget, gpointer *data)
+{
+  if (strcmp((char *)data, "specifyRb") == 0) {
+    gtk_widget_set_sensitive(blocksEntry, TRUE);
+    gtk_widget_set_sensitive(blocksLabel, TRUE);
+  } else {
+    gtk_widget_set_sensitive(blocksEntry, FALSE);
+    gtk_widget_set_sensitive(blocksLabel, FALSE);
+  }
+}
+
 
 /*
  *
@@ -12,7 +77,7 @@
  */
 void create_disk_image()
 {
-  GtkWidget *dialog_window;
+  GtkWidget *dialog;
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
   GtkWidget *help_button;
@@ -37,6 +102,7 @@ void create_disk_image()
   GtkWidget *pascalRb;
   GtkWidget *hfsRb;
   GtkWidget *blankRb;
+  GSList *filesystemRbGroup = NULL;
   GtkWidget *s140kRb;
   GtkWidget *s800kRb;
   GtkWidget *s14MRb;
@@ -44,38 +110,37 @@ void create_disk_image()
   GtkWidget *s16MBRb;
   GtkWidget *s20MBRb;
   GtkWidget *s32MBRb;
-  GtkWidget *specifyRb;
-  GtkWidget *blocksEntry;
-  GtkWidget *blocksLabel;
   GtkWidget *specifyHbox;
-  GtkWidget *allocateDOSTracksCb;
+  GtkWidget *specifyRb;
+  GSList *newDiskSizeRbGroup = NULL;
+  /*GtkWidget *allocateDOSTracksCb;*/
   GtkWidget *diskVolumeLabel;
-  GtkWidget *diskVolumeEntry;
+  /*GtkWidget *diskVolumeEntry;*/
   GtkWidget *diskVolumeHbox;
   GtkWidget *prodosVolumeLabel;
-  GtkWidget *prodosVolumeEntry;
+  /*GtkWidget *prodosVolumeEntry;*/
   GtkWidget *pascalVolumeLabel;
-  GtkWidget *pascalVolumeEntry;
+  /*GtkWidget *pascalVolumeEntry;*/
   GtkWidget *hfsVolumeLabel;
-  GtkWidget *hfsVolumeEntry;
+  /*GtkWidget *hfsVolumeEntry;*/
 
   /* --- Create the dialog --- */
-  dialog_window = gtk_dialog_new();
+  dialog = gtk_dialog_new();
 
   /* --- Trap the window close signal to release the grab --- */
-  gtk_signal_connect(GTK_OBJECT(dialog_window), "destroy",
+  gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
                       GTK_SIGNAL_FUNC(closing_dialog),
-                      &dialog_window);
+                      &dialog);
 
   /* --- Set the title --- */
-  gtk_window_set_title(GTK_WINDOW(dialog_window), "Create Disk Image");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Create Disk Image");
 
   /* --- Add a small border --- */
-  gtk_container_border_width(GTK_CONTAINER(dialog_window), 5);
+  gtk_container_border_width(GTK_CONTAINER(dialog), 5);
 
   /* Two columns top portion of dialog vbox */
   hbox1 = gtk_hbox_new(FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->vbox), hbox1, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox1, TRUE, TRUE, 0);
 
   gtk_widget_show(hbox1);
 
@@ -138,68 +203,36 @@ void create_disk_image()
   gtk_container_add(GTK_CONTAINER(hfsOptionsFrame), hfsOptionsVbox);
   gtk_widget_show(hfsOptionsVbox);
 
-  dos32Rb = gtk_radio_button_new_with_label(NULL, "DOS 3.2 (13-sector)");
-  dos33Rb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(dos32Rb), "DOS 3.3");
-  prodosRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(dos33Rb), "ProDOS");
-  pascalRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(prodosRb), "Pascal");
-  hfsRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(pascalRb), "HFS");
-  blankRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(hfsRb), "Blank");
-
-  gtk_box_pack_start(GTK_BOX(filesystemVbox), dos32Rb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(filesystemVbox), dos33Rb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(filesystemVbox), prodosRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(filesystemVbox), pascalRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(filesystemVbox), hfsRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(filesystemVbox), blankRb, TRUE, TRUE, 0);
-
-  gtk_widget_show(dos32Rb);
-  gtk_widget_show(dos33Rb);
-  gtk_widget_show(prodosRb);
-  gtk_widget_show(pascalRb);
-  gtk_widget_show(hfsRb);
-  gtk_widget_show(blankRb);
-
-  s140kRb = gtk_radio_button_new_with_label(NULL, "140KB (5.25\" floppy)");
-  s800kRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s140kRb), "800KB (3.5\" floppy)");
-  s14MRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s800kRb), "1.4MB (3.5\" PC floppy)");
-  s5MBRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s14MRb), "5MB");
-  s16MBRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s5MBRb), "16MB");
-  s20MBRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s16MBRb), "20MB");
-  s32MBRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s20MBRb), "32MB (largest ProDOS volume)");
-  specifyRb = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(s32MBRb), "Specify size:");
+  dos32Rb = create_radio(filesystemVbox, &filesystemRbGroup, "DOS 3.2 (13-sector)");
+  dos33Rb = create_radio(filesystemVbox, &filesystemRbGroup, "DOS 3.3");
+  prodosRb = create_radio(filesystemVbox, &filesystemRbGroup, "ProDOS");
+  pascalRb = create_radio(filesystemVbox, &filesystemRbGroup, "Pascal");
+  hfsRb = create_radio(filesystemVbox, &filesystemRbGroup, "HFS");
+  blankRb = create_radio(filesystemVbox, &filesystemRbGroup, "Blank");
 
   specifyHbox = gtk_hbox_new(FALSE, 0);
+  gtk_widget_show(specifyHbox);
+
+  s140kRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "140KB (5.25\" floppy)");
+  s800kRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "800KB (3.5\" floppy)");
+  s14MRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "1.4MB (3.5\" PC floppy)");
+  s5MBRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "5MB");
+  s16MBRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "16MB");
+  s20MBRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "20MB");
+  s32MBRb = create_radio(newDiskSizeVbox, &newDiskSizeRbGroup, "32MB (largest ProDOS volume)");
+  specifyRb = create_radio(specifyHbox, &newDiskSizeRbGroup, "Specify size:");
 
   blocksEntry = gtk_entry_new();
   gtk_entry_set_max_length(GTK_ENTRY(blocksEntry), 8);
+  gtk_box_pack_start(GTK_BOX(specifyHbox), blocksEntry, TRUE, TRUE, 0);
+  gtk_widget_show(blocksEntry);
 
   blocksLabel = gtk_label_new(" blocks");
   gtk_misc_set_alignment(GTK_MISC(blocksLabel), 0, 0.5);
-
-  gtk_box_pack_start(GTK_BOX(specifyHbox), specifyRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(specifyHbox), blocksEntry, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(specifyHbox), blocksLabel, TRUE, TRUE, 0);
-
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s140kRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s800kRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s14MRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s5MBRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s16MBRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s20MBRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), s32MBRb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), specifyHbox, TRUE, TRUE, 0);
-
-  gtk_widget_show(s140kRb);
-  gtk_widget_show(s800kRb);
-  gtk_widget_show(s14MRb);
-  gtk_widget_show(s5MBRb);
-  gtk_widget_show(s16MBRb);
-  gtk_widget_show(s20MBRb);
-  gtk_widget_show(s32MBRb);
-  gtk_widget_show(specifyRb);
-  gtk_widget_show(blocksEntry);
   gtk_widget_show(blocksLabel);
-  gtk_widget_show(specifyHbox);
+
+  gtk_box_pack_start(GTK_BOX(newDiskSizeVbox), specifyHbox, TRUE, TRUE, 0);
 
   allocateDOSTracksCb = gtk_check_button_new_with_label("Allocate DOS tracks");
 
@@ -258,6 +291,46 @@ void create_disk_image()
   gtk_widget_show(hfsVolumeLabel);
   gtk_widget_show(hfsVolumeEntry);
 
+  /* Set default selections. */
+  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(prodosRb), TRUE);
+  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(s140kRb), TRUE);
+  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(allocateDOSTracksCb), TRUE);
+
+  gtk_entry_set_text(GTK_ENTRY(blocksEntry), "280");
+  gtk_entry_set_text(GTK_ENTRY(diskVolumeEntry), "254");
+  gtk_entry_set_text(GTK_ENTRY(prodosVolumeEntry), "NEW.DISK");
+  gtk_entry_set_text(GTK_ENTRY(pascalVolumeEntry), "BLANK");
+  gtk_entry_set_text(GTK_ENTRY(hfsVolumeEntry), "New Disk");
+
+  /* Set default sensitivity to prodos */
+  gtk_widget_set_sensitive(allocateDOSTracksCb, FALSE);
+  gtk_widget_set_sensitive(diskVolumeEntry, FALSE);
+  gtk_widget_set_sensitive(prodosVolumeEntry, TRUE);
+  gtk_widget_set_sensitive(pascalVolumeEntry, FALSE);
+  gtk_widget_set_sensitive(hfsVolumeEntry, FALSE);
+
+  /* Set up callbacks for filesystem frame */
+  gtk_signal_connect(GTK_OBJECT(dos32Rb), "clicked", GTK_SIGNAL_FUNC(filesystemRbCallback), (gpointer)"dos32Rb");
+  gtk_signal_connect(GTK_OBJECT(dos33Rb), "clicked", GTK_SIGNAL_FUNC(filesystemRbCallback), (gpointer)"dos33Rb");
+  gtk_signal_connect(GTK_OBJECT(prodosRb), "clicked", GTK_SIGNAL_FUNC(filesystemRbCallback), (gpointer)"prodosRb");
+  gtk_signal_connect(GTK_OBJECT(pascalRb), "clicked", GTK_SIGNAL_FUNC(filesystemRbCallback), (gpointer)"pascalRb");
+  gtk_signal_connect(GTK_OBJECT(hfsRb), "clicked", GTK_SIGNAL_FUNC(filesystemRbCallback), (gpointer)"hfsRb");
+  gtk_signal_connect(GTK_OBJECT(blankRb), "clicked", GTK_SIGNAL_FUNC(filesystemRbCallback), (gpointer)"blankRb");
+
+  /* Set up callbacks for new disk size frame */
+  gtk_signal_connect(GTK_OBJECT(s140kRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s140kRb");
+  gtk_signal_connect(GTK_OBJECT(s800kRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s800kRb");
+  gtk_signal_connect(GTK_OBJECT(s14MRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s14MRb");
+  gtk_signal_connect(GTK_OBJECT(s5MBRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s5MBRb");
+  gtk_signal_connect(GTK_OBJECT(s16MBRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s16MBRb");
+  gtk_signal_connect(GTK_OBJECT(s20MBRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s20MBRb");
+  gtk_signal_connect(GTK_OBJECT(s32MBRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"s32MBRb");
+  gtk_signal_connect(GTK_OBJECT(specifyRb), "clicked", GTK_SIGNAL_FUNC(newDiskSizeRbCallback), (gpointer)"specifyRb");
+
+  /* Set default sensitivity to not specify */
+  gtk_widget_set_sensitive(blocksEntry, FALSE);
+  gtk_widget_set_sensitive(blocksLabel, FALSE);
+
   /*
    * --- OK button
    */
@@ -267,13 +340,13 @@ void create_disk_image()
 
   gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
                      GTK_SIGNAL_FUNC(okfunc_create_disk_image),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow "Cancel" to be a default --- */
   GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
   /* --- Add the OK button to the bottom hbox2 --- */
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->action_area), ok_button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), ok_button, TRUE, TRUE, 0);
 
   /* --- Make the "OK" the default --- */
   gtk_widget_grab_default(ok_button);
@@ -290,13 +363,13 @@ void create_disk_image()
 
   gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow "Cancel" to be a default --- */
   GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
 
   /* --- Add the "Cancel" button to the dialog --- */
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->action_area), cancel_button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), cancel_button, TRUE, TRUE, 0);
 
   /* --- Make the button visible. --- */
   gtk_widget_show(cancel_button);
@@ -310,18 +383,18 @@ void create_disk_image()
 
   gtk_signal_connect(GTK_OBJECT(help_button), "clicked",
                      GTK_SIGNAL_FUNC(help_func_create_disk_image),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the "Help" button to the dialog --- */
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->action_area), help_button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), help_button, TRUE, TRUE, 0);
 
   /* --- Make the button visible. --- */
   gtk_widget_show(help_button);
 
   /* --- Show the dialog --- */
-  gtk_widget_show(dialog_window);
+  gtk_widget_show(dialog);
 
   /* --- Only this window can be used for now --- */
-  gtk_grab_add(dialog_window);
+  gtk_grab_add(dialog);
 }
 

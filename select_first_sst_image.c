@@ -5,44 +5,18 @@
 
 /*
  *
- * open_file()
- *
- * Open file dialog
+ * select_first_sst_image()
  *
  */
-void open_file()
+void select_first_sst_image(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
   gint res;
-  GtkFileFilter *shrinkItArchivesFilt;
-  GtkFileFilter *binaryIIArchivesFilt;
-  GtkFileFilter *acuArchivesFilt;
-  GtkFileFilter *appleSingleFilesFilt;
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
-  GtkWidget *openAsReadOnlyCb;
 
-  shrinkItArchivesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(shrinkItArchivesFilt, "ShrinkIt Archives");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Ss][Hh][Kk]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Ss][Dd][Kk]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Bb][Xx][Yy]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Ss][Ee][Aa]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Bb][Ss][Ee]");
+  g_print("Select first sst image goes here\n");
 
-  binaryIIArchivesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(binaryIIArchivesFilt, "Binary II Archives");
-  gtk_file_filter_add_pattern(binaryIIArchivesFilt, "*.[Bb][Nn][Yy]");
-  gtk_file_filter_add_pattern(binaryIIArchivesFilt, "*.[Bb][Qq][Yy]");
-  gtk_file_filter_add_pattern(binaryIIArchivesFilt, "*.[Bb][Xx][Yy]");
-
-  acuArchivesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(acuArchivesFilt, "ACU Archives");
-  gtk_file_filter_add_pattern(acuArchivesFilt, "*.[Aa][Cc][Uu]");
-
-  appleSingleFilesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(appleSingleFilesFilt, "AppleSingle Files");
-  gtk_file_filter_add_pattern(appleSingleFilesFilt, "*.[Aa][Ss]");
 
   diskImagesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(diskImagesFilt, "Disk Images");
@@ -71,7 +45,7 @@ void open_file()
   gtk_file_filter_set_name(allFilesFilt, "All Files");
   gtk_file_filter_add_pattern(allFilesFilt, "*");
 
-  dialog = gtk_file_chooser_dialog_new("Open",
+  dialog = gtk_file_chooser_dialog_new("Select first SST Image",
                                        NULL,
                                        GTK_FILE_CHOOSER_ACTION_OPEN,
                                        GTK_STOCK_CANCEL,
@@ -80,18 +54,8 @@ void open_file()
                                        GTK_RESPONSE_ACCEPT,
                                        NULL);
 
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), shrinkItArchivesFilt);
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), binaryIIArchivesFilt);
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), acuArchivesFilt);
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), appleSingleFilesFilt);
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), diskImagesFilt);
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), allFilesFilt);
-
-  gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), allFilesFilt);
-
-  openAsReadOnlyCb = gtk_check_button_new_with_label("Open as read-only");
-  gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area), openAsReadOnlyCb, TRUE, TRUE, 0);
-  gtk_widget_show(openAsReadOnlyCb);
 
   res = gtk_dialog_run(GTK_DIALOG(dialog));
   if (res == GTK_RESPONSE_ACCEPT) {

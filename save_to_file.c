@@ -12,6 +12,6 @@
  */
 void save_to_file(char *filename)
 {
-    g_print("Save to file goes here.\n");
+  g_print("Save to file goes here.\n");
 }
 

@@ -12,7 +12,7 @@
  */
 void disk_sector_viewer_popup()
 {
-  GtkWidget *dialog_window;
+  GtkWidget *dialog;
   GtkWidget *vbox;
   GtkWidget *openDiskButton;
   GtkWidget *openVolumeButton;
@@ -20,22 +20,22 @@ void disk_sector_viewer_popup()
   GtkWidget *cancelButton;
 
   /* --- Create a dialog window --- */
-  dialog_window = gtk_dialog_new();
+  dialog = gtk_dialog_new();
 
   /* --- Trap the destroy button --- */
-  gtk_signal_connect(GTK_OBJECT(dialog_window), "destroy",
+  gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
 	             GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-	             &dialog_window);
+	             &dialog);
 
   /* --- Add a title to the window --- */
-  /*gtk_window_set_title(GTK_WINDOW(dialog_window), "Disk sector viewer");*/
-  gtk_window_set_title(GTK_WINDOW(dialog_window), " ");
+  /*gtk_window_set_title(GTK_WINDOW(dialog), "Disk sector viewer");*/
+  gtk_window_set_title(GTK_WINDOW(dialog), " ");
 
   /* --- Create a small border --- */
-  gtk_container_border_width(GTK_CONTAINER(dialog_window), 5);
+  gtk_container_border_width(GTK_CONTAINER(dialog), 5);
 
   vbox = gtk_vbox_new(FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->vbox), vbox, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), vbox, TRUE, TRUE, 0);
   gtk_widget_show(vbox);
 
   /*
@@ -48,7 +48,7 @@ void disk_sector_viewer_popup()
   /* --- Need to close the window if they press "ok" --- */
   gtk_signal_connect(GTK_OBJECT(openDiskButton), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the button to the dialog --- */
   gtk_box_pack_start(GTK_BOX(vbox), openDiskButton, TRUE, TRUE, 0);
@@ -66,7 +66,7 @@ void disk_sector_viewer_popup()
   /* --- Need to close the window if they press "ok" --- */
   gtk_signal_connect(GTK_OBJECT(openVolumeButton), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the button to the dialog --- */
   gtk_box_pack_start(GTK_BOX(vbox), openVolumeButton, TRUE, TRUE, 0);
@@ -84,7 +84,7 @@ void disk_sector_viewer_popup()
   /* --- Need to close the window if they press "ok" --- */
   gtk_signal_connect(GTK_OBJECT(openArchiveButton), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the button to the dialog --- */
   gtk_box_pack_start(GTK_BOX(vbox), openArchiveButton, TRUE, TRUE, 0);
@@ -102,7 +102,7 @@ void disk_sector_viewer_popup()
   /* --- Need to close the window if they press "ok" --- */
   gtk_signal_connect(GTK_OBJECT(cancelButton), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow it to be the default button --- */
   GTK_WIDGET_SET_FLAGS(cancelButton, GTK_CAN_DEFAULT);
@@ -117,8 +117,8 @@ void disk_sector_viewer_popup()
   gtk_widget_show(cancelButton);
 
   /* --- Make the dialog visible --- */
-  gtk_widget_show(dialog_window);
+  gtk_widget_show(dialog);
 
-  gtk_grab_add(dialog_window);
+  gtk_grab_add(dialog);
 }
 

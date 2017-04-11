@@ -14,10 +14,10 @@
  */
 void okfunc_create_disk_image(GtkWidget *widget, gpointer data)
 {
-    /* --- Display message --- */
-    g_print("Create function goes here.\n");
+  /* --- Display message --- */
+  g_print("Create function goes here.\n");
 
-    /* --- Close it. --- */
-    gtk_widget_destroy(GTK_WIDGET(data));
+  /* --- Close it. --- */
+  gtk_widget_destroy(GTK_WIDGET(data));
 }
 

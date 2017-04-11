@@ -5,45 +5,19 @@
 
 /*
  *
- * open_file()
+ * disk_image_converter()
  *
- * Open file dialog
+ * Disk image converter file dialog
  *
  */
-void open_file()
+void disk_image_converter(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
   gint res;
-  GtkFileFilter *shrinkItArchivesFilt;
-  GtkFileFilter *binaryIIArchivesFilt;
-  GtkFileFilter *acuArchivesFilt;
-  GtkFileFilter *appleSingleFilesFilt;
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
-  GtkWidget *openAsReadOnlyCb;
 
-  shrinkItArchivesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(shrinkItArchivesFilt, "ShrinkIt Archives");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Ss][Hh][Kk]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Ss][Dd][Kk]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Bb][Xx][Yy]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Ss][Ee][Aa]");
-  gtk_file_filter_add_pattern(shrinkItArchivesFilt, "*.[Bb][Ss][Ee]");
-
-  binaryIIArchivesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(binaryIIArchivesFilt, "Binary II Archives");
-  gtk_file_filter_add_pattern(binaryIIArchivesFilt, "*.[Bb][Nn][Yy]");
-  gtk_file_filter_add_pattern(binaryIIArchivesFilt, "*.[Bb][Qq][Yy]");
-  gtk_file_filter_add_pattern(binaryIIArchivesFilt, "*.[Bb][Xx][Yy]");
-
-  acuArchivesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(acuArchivesFilt, "ACU Archives");
-  gtk_file_filter_add_pattern(acuArchivesFilt, "*.[Aa][Cc][Uu]");
-
-  appleSingleFilesFilt = gtk_file_filter_new();
-  gtk_file_filter_set_name(appleSingleFilesFilt, "AppleSingle Files");
-  gtk_file_filter_add_pattern(appleSingleFilesFilt, "*.[Aa][Ss]");
-
+  /* Filter for disk images */
   diskImagesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(diskImagesFilt, "Disk Images");
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Ss][Hh][Kk]");
@@ -67,11 +41,13 @@ void open_file()
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Gg][Zz]");
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Zz][Ii][Pp]");
 
+  /* Filter for all files */
   allFilesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(allFilesFilt, "All Files");
   gtk_file_filter_add_pattern(allFilesFilt, "*");
 
-  dialog = gtk_file_chooser_dialog_new("Open",
+  /* Creae the file opener dialog */
+  dialog = gtk_file_chooser_dialog_new("Select image to convert",
                                        NULL,
                                        GTK_FILE_CHOOSER_ACTION_OPEN,
                                        GTK_STOCK_CANCEL,
@@ -80,25 +56,19 @@ void open_file()
                                        GTK_RESPONSE_ACCEPT,
                                        NULL);
 
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), shrinkItArchivesFilt);
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), binaryIIArchivesFilt);
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), acuArchivesFilt);
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), appleSingleFilesFilt);
+  /* Add the filters */
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), diskImagesFilt);
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), allFilesFilt);
 
-  gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), allFilesFilt);
-
-  openAsReadOnlyCb = gtk_check_button_new_with_label("Open as read-only");
-  gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area), openAsReadOnlyCb, TRUE, TRUE, 0);
-  gtk_widget_show(openAsReadOnlyCb);
+  /* Set disk images filter as default */
+  gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), diskImagesFilt);
 
   res = gtk_dialog_run(GTK_DIALOG(dialog));
   if (res == GTK_RESPONSE_ACCEPT) {
     char *filename;
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
     filename = gtk_file_chooser_get_filename(chooser);
-    do_open_file(filename);
+    do_image_converter(filename);
     g_free(filename);
   }
 

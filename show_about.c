@@ -14,8 +14,8 @@ void show_about(GtkWidget *widget, gpointer data)
 
   GtkWidget *dialog = gtk_about_dialog_new();
   gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog), "Calvados");
-  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), "0.1");
-  gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog),"(c) Leeland Heins");
+  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), "0.2");
+  gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog),"(c) 2017 Leeland Heins");
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog),
      "Calvados is intended to be a work-alike of CiderPress for Linux.");
   gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog),

@@ -7,10 +7,161 @@
  * 20170310 Leeland Heins
  *
  */
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkkeysyms-compat.h>
 
 #include "calvados.h"
+
+enum {
+  COL_PATHNAME = 0,
+  COL_TYPE,
+  COL_AUX,
+  COL_MODDATE,
+  COL_FORMAT,
+  COL_SIZE,
+  COL_RATIO,
+  COL_PACKED,
+  COL_ACCESS,
+  NUM_MAIN_WINDOW_COLS
+};
+
+
+/* For displaying displaying disk images/archives in main window */
+GtkListStore *mw_store;
+/*GtkTreeIter mw_iter;*/
+GtkCellRenderer *mw_renderer;
+GtkTreeModel *mw_model;
+GtkWidget *mw_view;
+
+
+/*
+ *
+ * display_image()
+ *
+ * Display the tree view in the main window,
+ *
+ */
+GtkWidget *display_image(GtkWidget *widget, gpointer data, GtkWidget *mw_box)
+{
+  mw_store = gtk_list_store_new(NUM_MAIN_WINDOW_COLS, G_TYPE_STRING, G_TYPE_UINT);
+
+/*FIXME*/
+  /* This needs to be in a loop reading from somewhere */
+  /* Append a row and fill in some data */
+  /*gtk_list_store_append(store, &mw_iter);
+  gtk_list_store_set(store, &mw_iter,
+                     COL_PATHNAME, "",
+                     COL_TYPE, "",
+                     COL_AUX, "",
+                     COL_MODDATE, "",
+                     COL_FORMAT, "",
+                     COL_SIZE, "",
+                     COL_RATIO, "",
+                     COL_PACKED, "",
+                     COL_ACCESS, "",
+                     -1);*/
+
+  mw_view = gtk_tree_view_new();
+  gtk_widget_set_size_request(mw_view, LIST_WIDTH, LIST_HEIGHT);
+
+  /* --- Column #1 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Pathname",
+                                              mw_renderer,
+                                              "text", COL_PATHNAME,
+                                              NULL);
+
+  /* --- Column #2 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Type",
+                                              mw_renderer,
+                                              "text", COL_TYPE,
+                                              NULL);
+
+  /* --- Column #3 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Aux",
+                                              mw_renderer,
+                                              "text", COL_AUX,
+                                              NULL);
+  /* --- Column #4 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Mod Date",
+                                              mw_renderer,
+                                              "text", COL_MODDATE,
+                                              NULL);
+
+  /* --- Column #5 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Format",
+                                              mw_renderer,
+                                              "text", COL_FORMAT,
+                                              NULL);
+
+  /* --- Column #6 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Size",
+                                              mw_renderer,
+                                              "text", COL_SIZE,
+                                              NULL);
+
+  /* --- Column #7 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Ratio",
+                                              mw_renderer,
+                                              "text", COL_RATIO,
+                                              NULL);
+
+  /* --- Column #8 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Packed",
+                                              mw_renderer,
+                                              "text", COL_PACKED,
+                                              NULL);
+
+  /* --- Column #9 --- */
+  mw_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(mw_view),
+                                              -1,
+                                              "Access",
+                                              mw_renderer,
+                                              "text", COL_ACCESS,
+                                              NULL);
+
+  mw_model = GTK_TREE_MODEL(mw_store);
+
+  gtk_tree_view_set_model(GTK_TREE_VIEW(mw_view), mw_model);
+
+  /* The tree view has acquired its own reference to the
+   *  model, so we can drop ours. That way the model will
+   *  be freed automatically when the tree view is destroyed */
+  g_object_unref(mw_model);
+
+  gtk_box_pack_start(GTK_BOX(mw_box), mw_view, TRUE, TRUE, 0);
+
+  gtk_widget_show(mw_view);
+
+  return mw_view;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -253,8 +404,24 @@ int main(int argc, char *argv[])
   gtk_menu_shell_append(GTK_MENU_SHELL(fileMenu), printMi);
   gtk_menu_shell_append(GTK_MENU_SHELL(fileMenu), fileSep2);
   gtk_menu_shell_append(GTK_MENU_SHELL(fileMenu), quitMi);
+
   /* Add file menu to menu bar */
   gtk_menu_shell_append(GTK_MENU_SHELL(menubar), fileMi);
+
+  /* connect 'reopen' menu item to the reopen dialog event */
+  g_signal_connect(G_OBJECT(reopenMi), "activate", G_CALLBACK(reopen_menu_item), (gpointer)"reopenMi");
+
+  /* connect 'save changes' menu item to the save_changes dialog event */
+  g_signal_connect(G_OBJECT(saveChangesMi), "activate", G_CALLBACK(save_changes), (gpointer)"saveChangesMi");
+
+  /* connect 'close' menu item to the close_menu_item dialog event */
+  g_signal_connect(G_OBJECT(closeMi), "activate", G_CALLBACK(close_menu_item), (gpointer)"closeMi");
+
+  /* connect 'archive info' menu item to the archive_info dialog event */
+  g_signal_connect(G_OBJECT(archiveInfoMi), "activate", G_CALLBACK(archive_info), (gpointer)"archiveInfoMi");
+
+  /* Hook up the print menu item to the print dialog box */
+  g_signal_connect(G_OBJECT(printMi), "activate", G_CALLBACK(print_page), (gpointer)"printMi");
 
   /* Edit menu bar items */
   editMi = gtk_menu_item_new_with_mnemonic("_Edit");
@@ -332,8 +499,26 @@ int main(int argc, char *argv[])
   /* Add edit menu to menu bar */
   gtk_menu_shell_append(GTK_MENU_SHELL(menubar), editMi);
 
+  /* connect 'copy' menu item to the copy_menu_item dialog event */
+  g_signal_connect(G_OBJECT(copyMi), "activate", G_CALLBACK(copy_menu_item), (gpointer)"copyMi");
+
+  /* connect 'paste' menu item to the paste dialog event */
+  g_signal_connect(G_OBJECT(pasteMi), "activate", G_CALLBACK(paste), (gpointer)"pasteMi");
+
+  /* connect 'paste special' menu item to the paste_special dialog event */
+  g_signal_connect(G_OBJECT(pasteSpecialMi), "activate", G_CALLBACK(paste_special), (gpointer)"pasteSpecialMi");
+
+  /* connect 'find' menu item to the find dialog event */
+  g_signal_connect(G_OBJECT(findMi), "activate", G_CALLBACK(find), (gpointer)"findMi");
+
+  /* connect 'select all' menu item to the select_all dialog event */
+  g_signal_connect(G_OBJECT(selectAllMi), "activate", G_CALLBACK(select_all), (gpointer)"selectAllMi");
+
+  /* connect 'invert selection' menu item to the invert_selection dialog event */
+  g_signal_connect(G_OBJECT(invertSelectionMi), "activate", G_CALLBACK(invert_selection), (gpointer)"invertSelectionMi");
+
   /* connect 'preferences' menu item to the preferences dialog event */
-  g_signal_connect(G_OBJECT(preferencesMi), "activate", G_CALLBACK(preferences), NULL);
+  g_signal_connect(G_OBJECT(preferencesMi), "activate", G_CALLBACK(preferences), (gpointer)"preferencesMi");
 
   /* Action menu bar items */
   actionsMi = gtk_menu_item_new_with_label("Actions");
@@ -431,25 +616,52 @@ int main(int argc, char *argv[])
   gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
 
   /* connect 'open image' menu item to the create welcomeage dialog event */
-  g_signal_connect(G_OBJECT(openMi), "activate", G_CALLBACK(open_file), NULL);
+  g_signal_connect(G_OBJECT(openMi), "activate", G_CALLBACK(open_file), (gpointer)"openMi");
+
+  /* connect 'view' menu item to the file viewer dialog event */
+  g_signal_connect(G_OBJECT(viewMi), "activate", G_CALLBACK(file_viewer), (gpointer)"viewMi");
 
   /* connect 'disk image' menu item to the create disk image dialog event */
-  g_signal_connect(G_OBJECT(diskImageMi), "activate", G_CALLBACK(create_disk_image), NULL);
+  g_signal_connect(G_OBJECT(diskImageMi), "activate", G_CALLBACK(create_disk_image), (gpointer)"diskImageMi");
+
+  /* connect 'add disk image' menu item to the add disk image dialog event */
+  g_signal_connect(G_OBJECT(addDiskImageMi), "activate", G_CALLBACK(add_disk_image), (gpointer)"addDiskImageMi");
 
   /* connect 'shrinkit archive' menu item to the new archive dialog event */
-  g_signal_connect(G_OBJECT(shrinkItArchiveMi), "activate", G_CALLBACK(new_archive), NULL);
+  g_signal_connect(G_OBJECT(shrinkItArchiveMi), "activate", G_CALLBACK(new_archive), (gpointer)"shrinkItArchiveMi");
 
   /* connect 'select volume' menu item to the open volume dialog event */
-  g_signal_connect(G_OBJECT(openVolumeMi), "activate", G_CALLBACK(select_volume), NULL);
+  g_signal_connect(G_OBJECT(openVolumeMi), "activate", G_CALLBACK(select_volume), (gpointer)"openVolumeMi");
+
+  /* connect 'rename' menu item to the rename dialog event */
+  g_signal_connect(G_OBJECT(renameMi), "activate", G_CALLBACK(rename_file), (gpointer)"renameMi");
+
+  /* connect 'delete' menu item to the delete dialog event */
+  g_signal_connect(G_OBJECT(deleteMi), "activate", G_CALLBACK(delete_file), (gpointer)"deleteMi");
+
+  /* connect 'recompress' menu item to the recompress dialog event */
+  g_signal_connect(G_OBJECT(recompressMi), "activate", G_CALLBACK(recompress_files), (gpointer)"recompressMi");
+
+  /* connect 'edit comment' menu item to the edit comment dialog event */
+  g_signal_connect(G_OBJECT(editCommentMi), "activate", G_CALLBACK(edit_comment), (gpointer)"editCommentMi");
 
   /* connect 'about' menu item to the about box event */
-  g_signal_connect(G_OBJECT(aboutCalvadosMi), "activate", G_CALLBACK(show_about), NULL);
+  g_signal_connect(G_OBJECT(aboutCalvadosMi), "activate", G_CALLBACK(show_about), (gpointer)"aboutCalvadosMi");
 
   /* connect 'disk sector viewer' menu item to the popup menu event */
-  g_signal_connect(G_OBJECT(diskSectorViewerMi), "activate", G_CALLBACK(disk_sector_viewer_popup), NULL);
+  g_signal_connect(G_OBJECT(diskSectorViewerMi), "activate", G_CALLBACK(disk_sector_viewer_popup), (gpointer)"diskSectorViewerMi");
+
+  /* connect 'Select image convert' menu item to the select image conversions popup menu event */
+  g_signal_connect(G_OBJECT(diskImageConverterMi), "activate", G_CALLBACK(select_image_convert), (gpointer)"diskImageConverterMi");
+
+  /* connect 'Select bulk disk image converter' menu item to the bulk disk image converter popup menu event */
+  g_signal_connect(G_OBJECT(bulkDiskImageConverterMi), "activate", G_CALLBACK(bulk_disk_image_converter), (gpointer)"bulkDiskImageConverterMi");
+
+  /* connect 'Merge SST Images' menu item to the merge sst images popup menu event */
+  g_signal_connect(G_OBJECT(mergeSSTImagesMi), "activate", G_CALLBACK(select_first_sst_image), (gpointer)"mergeSSTImagesMi");
 
   /* Connect 'quit' menu item to the window's "destroy" event */
-  g_signal_connect(G_OBJECT(quitMi), "activate", G_CALLBACK(gtk_main_quit), NULL);
+  g_signal_connect(G_OBJECT(quitMi), "activate", G_CALLBACK(gtk_main_quit), (gpointer)"quitMi");
 
   /* Create the tool bar */
   toolbar = gtk_toolbar_new();
@@ -587,29 +799,68 @@ int main(int argc, char *argv[])
   gtk_widget_set_tooltip_text(GTK_WIDGET(exitTb), "Exit");
 
   /* Hook up the open image button to the open file dialog box */
-  g_signal_connect(G_OBJECT(openTb), "clicked", G_CALLBACK(open_file), NULL);
+  g_signal_connect(G_OBJECT(openTb), "clicked", G_CALLBACK(open_file), (gpointer)"openTb");
 
   /* Hook up the create disk image button to the create disk image dialog box */
-  g_signal_connect(G_OBJECT(createDiskImageTb), "clicked", G_CALLBACK(create_disk_image), NULL);
+  g_signal_connect(G_OBJECT(createDiskImageTb), "clicked", G_CALLBACK(create_disk_image), (gpointer)"createDiskImageTb");
 
   /* Hook up the new archive image button to the create disk image dialog box */
-  g_signal_connect(G_OBJECT(newArchiveTb), "clicked", G_CALLBACK(new_archive), NULL);
+  g_signal_connect(G_OBJECT(newArchiveTb), "clicked", G_CALLBACK(new_archive), (gpointer)"newArchiveTb");
 
   /* Hook up the open volume button to the select volume dialog box */
-  g_signal_connect(G_OBJECT(openVolumeTb), "clicked", G_CALLBACK(select_volume), NULL);
+  g_signal_connect(G_OBJECT(openVolumeTb), "clicked", G_CALLBACK(select_volume), (gpointer)"openVolumeTb");
+
+  /* Hook up the print button to the print dialog box */
+  g_signal_connect(G_OBJECT(printTb), "clicked", G_CALLBACK(print_page), (gpointer)window);
+
+  /* Hook up the add files button to the add files dialog box */
+  g_signal_connect(G_OBJECT(addFilesTb), "clicked", G_CALLBACK(add_files), (gpointer)"addFilesTb");
+
+  /* Hook up the add disk image button to the add disk image dialog box */
+  g_signal_connect(G_OBJECT(addDiskImageTb), "clicked", G_CALLBACK(add_disk_image), (gpointer)"addDiskImageTb");
+
+  /* Hook up the view button to the file viewer dialog box */
+  g_signal_connect(G_OBJECT(viewTb), "clicked", G_CALLBACK(file_viewer), (gpointer)"viewTb");
+
+  /* Hook up the extract files button to the extract files dialog box */
+  g_signal_connect(G_OBJECT(extractTb), "clicked", G_CALLBACK(extract_files), (gpointer)"extractTb");
+
+  /* Hook up the test button to the test dialog box */
+  g_signal_connect(G_OBJECT(testTb), "clicked", G_CALLBACK(test), (gpointer)"testTb");
+
+  /* Hook up the rename button to the rename dialog box */
+  g_signal_connect(G_OBJECT(renameTb), "clicked", G_CALLBACK(rename_file), (gpointer)"renameTb");
+
+  /* Hook up the delete button to the delete dialog box */
+  g_signal_connect(G_OBJECT(deleteTb), "clicked", G_CALLBACK(delete_file), (gpointer)"deleteTb");
+
+  /* Hook up the recompress button to the delete dialog box */
+  g_signal_connect(G_OBJECT(recompressTb), "clicked", G_CALLBACK(recompress_files), (gpointer)"recompressTb");
+
+  /* Hook up the edit comment button to the edit comment dialog box */
+  g_signal_connect(G_OBJECT(editCommentTb), "clicked", G_CALLBACK(edit_comment), (gpointer)"editCommentTb");
 
   /* Hook up the disk sector viewer button to the disk sector viewer popup menu */
-  g_signal_connect(G_OBJECT(diskSectorViewerTb), "clicked", G_CALLBACK(disk_sector_viewer_popup), NULL);
+  g_signal_connect(G_OBJECT(diskSectorViewerTb), "clicked", G_CALLBACK(disk_sector_viewer_popup), (gpointer)"diskSectorViewerTb");
+
+  /* Hook up the disk image converter button to the disk image converter dialog box */
+  g_signal_connect(G_OBJECT(diskImageConverterTb), "clicked", G_CALLBACK(disk_image_converter), (gpointer)"diskImageConverterTb");
+
+  /* Hook up the volume copier button to the volume copier dialog box */
+/* FIXME */
+  g_signal_connect(G_OBJECT(volumeCopierTb), "clicked", G_CALLBACK(select_volume), (gpointer)"volumeCopierTb");
+
+  /* Hook up the 'Select image convert' button item to the select image conversions dialog box */
+  g_signal_connect(G_OBJECT(diskImageConverterTb), "clicked", G_CALLBACK(select_image_convert), (gpointer)"diskImageConverterTb");
+
+  /* Hook up the merge sst images button to the merge sst images dialog box */
+  g_signal_connect(G_OBJECT(mergeSSTImagesTb), "clicked", G_CALLBACK(select_first_sst_image), (gpointer)"mergeSSTImagesTb");
 
   /* Hook up the exit button to the quit function */
-  g_signal_connect(G_OBJECT(exitTb), "clicked", G_CALLBACK(gtk_main_quit), NULL);
+  g_signal_connect(G_OBJECT(exitTb), "clicked", G_CALLBACK(gtk_main_quit), (gpointer)"exitTb");
 
   /* Add the tool bar to the vbox */
   gtk_box_pack_start(GTK_BOX(vbox), toolbar, FALSE, FALSE, 5);
-
-  /*button = gtk_button_new_with_label("Hello Window");
-  gtk_container_add(GTK_CONTAINER(vbox), button);
-  g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(gtk_main_quit), NULL);*/
 
   /* Add the status bar */
   statusbar = gtk_statusbar_new();

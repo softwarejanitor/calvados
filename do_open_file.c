@@ -12,7 +12,7 @@
  */
 void do_open_file(char *filename)
 {
-    /* --- Display message --- */
-    g_print("Open file function goes here.\n");
+  /* --- Display message --- */
+  g_print("Open file function goes here.\n");
 }
 

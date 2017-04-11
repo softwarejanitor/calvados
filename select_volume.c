@@ -17,9 +17,9 @@ enum {
  * Select volume dialog box
  *
  */
-void select_volume()
+void select_volume(GtkWidget *widget, gpointer data)
 {
-  GtkWidget *dialog_window;
+  GtkWidget *dialog;
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
   GtkWidget *help_button;
@@ -32,21 +32,23 @@ void select_volume()
   GtkCellRenderer *renderer;
   GtkTreeModel *model;
   GtkWidget *view;
-  GtkWidget *openAsReadOnlyCB;
+  GtkWidget *openAsReadOnlyCb;
+
+  g_print("data=%s\n", (char *)data);
 
   /* --- Create the dialog --- */
-  dialog_window = gtk_dialog_new();
+  dialog = gtk_dialog_new();
 
   /* --- Trap the window close signal to release the grab --- */
-  gtk_signal_connect(GTK_OBJECT(dialog_window), "destroy",
+  gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
                       GTK_SIGNAL_FUNC(closing_dialog),
-                      &dialog_window);
+                      &dialog);
 
   /* --- Set the title --- */
-  gtk_window_set_title(GTK_WINDOW(dialog_window), "Select Volume");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Select Volume");
 
   /* --- Add a small border --- */
-  gtk_container_border_width(GTK_CONTAINER(dialog_window), 5);
+  gtk_container_border_width(GTK_CONTAINER(dialog), 5);
 
   showHbox = gtk_hbox_new(FALSE, 0);
 
@@ -78,7 +80,7 @@ void select_volume()
   gtk_box_pack_start(GTK_BOX(showHbox), showLabel, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(showHbox), showCombo, TRUE, TRUE, 0);
 
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->vbox), showHbox, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), showHbox, TRUE, TRUE, 0);
 
   gtk_widget_show(showLabel);
   gtk_widget_show(showCombo);
@@ -96,6 +98,7 @@ void select_volume()
                      -1);*/
 
   view = gtk_tree_view_new();
+  gtk_widget_set_size_request(view, 320, 256);
 
   /* --- Column #1 --- */
   renderer = gtk_cell_renderer_text_new();
@@ -110,7 +113,7 @@ void select_volume()
   renderer = gtk_cell_renderer_text_new();
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view),
                                               -1,
-                                              "Remark",
+                                              "Remarks",
                                               renderer,
                                               "text", COL_REMARK,
                                               NULL);
@@ -124,16 +127,16 @@ void select_volume()
    *  be freed automatically when the tree view is destroyed */
   g_object_unref(model);
 
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->vbox), view, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), view, TRUE, TRUE, 0);
 
   gtk_widget_show(view);
 
-  openAsReadOnlyCB = gtk_check_button_new_with_label("Open as read-only (writing to the volume will be disabled)");
-  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(openAsReadOnlyCB), TRUE);
+  openAsReadOnlyCb = gtk_check_button_new_with_label("Open as read-only (writing to the volume will be disabled)");
+  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(openAsReadOnlyCb), TRUE);
 
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->vbox), openAsReadOnlyCB, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), openAsReadOnlyCb, TRUE, TRUE, 0);
 
-  gtk_widget_show(openAsReadOnlyCB);
+  gtk_widget_show(openAsReadOnlyCb);
 
   /*
    * --- OK button
@@ -144,13 +147,13 @@ void select_volume()
 
   gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
                      GTK_SIGNAL_FUNC(okfunc_select_volume),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow "Cancel" to be a default --- */
   GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
   /* --- Add the OK button to the bottom hbox2 --- */
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->action_area), ok_button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), ok_button, TRUE, TRUE, 0);
 
   /* --- Make the "OK" the default --- */
   gtk_widget_grab_default(ok_button);
@@ -167,13 +170,13 @@ void select_volume()
 
   gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow "Cancel" to be a default --- */
   GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
 
   /* --- Add the "Cancel" button to the dialog --- */
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->action_area), cancel_button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), cancel_button, TRUE, TRUE, 0);
 
   /* --- Make the button visible. --- */
   gtk_widget_show(cancel_button);
@@ -187,18 +190,18 @@ void select_volume()
 
   gtk_signal_connect(GTK_OBJECT(help_button), "clicked",
                      GTK_SIGNAL_FUNC(help_func_select_volume),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the "Help" button to the dialog --- */
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_window)->action_area), help_button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), help_button, TRUE, TRUE, 0);
 
   /* --- Make the button visible. --- */
   gtk_widget_show(help_button);
 
   /* --- Show the dialog --- */
-  gtk_widget_show(dialog_window);
+  gtk_widget_show(dialog);
 
   /* --- Only this window can be used for now --- */
-  gtk_grab_add(dialog_window);
+  gtk_grab_add(dialog);
 }
 

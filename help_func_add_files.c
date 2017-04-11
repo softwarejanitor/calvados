@@ -5,17 +5,17 @@
 
 /*
  *
- * help_func_create_disk_image()
+ * help_func_add_files()
  *
- * Help Function for create disk image
+ * Help Function for add files
  *
  * Show that the "Help" button was pressed
  *
  */
-void help_func_create_disk_image(GtkWidget *widget, gpointer data)
+void help_func_add_files(GtkWidget *widget, gpointer data)
 {
   /* --- Display message --- */
-  g_print("Help function for create disk images goes here.\n");
+  g_print("Help function for add files goes here.\n");
 
   /* --- Close it. --- */
   gtk_widget_destroy(GTK_WIDGET(data));

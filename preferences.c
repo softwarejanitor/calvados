@@ -5,6 +5,17 @@
 
 /*
  *
+ * select_temporary_files_folder()
+ *
+ */
+void select_temporary_files_folder()
+{
+  g_print("Select folder function goes here.\n");
+}
+
+
+/*
+ *
  * apply_func_preferences()
  *
  * Actually do apply of preferences.
@@ -137,7 +148,7 @@ GtkWidget *create_notebook(GtkWidget *window, GtkPositionType pos)
  */
 void preferences()
 {
-  GtkWidget *dialog_window;
+  GtkWidget *dialog;
   GtkWidget *dialogVbox;
   GtkWidget *notebook;
   GtkWidget *generalTab;
@@ -251,38 +262,45 @@ void preferences()
   GtkWidget *bzip2Cb;
   GtkWidget *bzip2Label;
   GtkWidget *filesVbox;
+  GtkWidget *folderForTemporaryFilesHbox;
   GtkWidget *folderForTemporaryFilesLabel;
+  GtkWidget *folderForTemporaryFilesEntry;
+  GtkWidget *folderForTemporaryFilesButton;
+  GtkWidget *folderForTemporaryFilesImage;
+  GtkWidget *externalFileViewerExtensionsLabel;
+  GtkWidget *externalFileViewerExtensionsEntry;
+  GtkWidget *filesSpacer;
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
   GtkWidget *apply_button;
   GtkWidget *help_button;
 
   /* --- Create the dialog --- */
-  /*dialog_window = gtk_dialog_new();*/
-  dialog_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  /*dialog = gtk_dialog_new();*/
+  dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
   /* --- Trap the window close signal to release the grab --- */
-  gtk_signal_connect(GTK_OBJECT(dialog_window), "destroy",
+  gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
                       GTK_SIGNAL_FUNC(closing_dialog),
-                      &dialog_window);
+                      &dialog);
 
   /* --- Set the title --- */
-  gtk_window_set_title(GTK_WINDOW(dialog_window), "Preferences");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Preferences");
 
   /* --- Add a small border --- */
-  gtk_container_border_width(GTK_CONTAINER(dialog_window), 5);
+  gtk_container_border_width(GTK_CONTAINER(dialog), 5);
 
   /* --- Set the window size. --- */
-  /*gtk_widget_set_usize(dialog_window, 500, 450);*/
+  /*gtk_widget_set_usize(dialog, 500, 450);*/
 
   /* --- Show the dialog --- */
-  gtk_widget_show(dialog_window);
+  gtk_widget_show(dialog);
 
   dialogVbox = gtk_vbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(dialog_window), dialogVbox);
+  gtk_container_add(GTK_CONTAINER(dialog), dialogVbox);
   gtk_widget_show(dialogVbox);
 
-  /*notebook = create_notebook(dialog_window, GTK_POS_TOP);*/
+  /*notebook = create_notebook(dialog, GTK_POS_TOP);*/
   notebook = create_notebook(dialogVbox, GTK_POS_TOP);
 
   /* --- Add pages to the notebook --- */
@@ -313,37 +331,45 @@ void preferences()
   gtk_widget_show(generalLeftVbox);
 
   pathnameCb = gtk_check_button_new_with_label("Pathname");
-  typeCb = gtk_check_button_new_with_label("Type");
-  auxTypeCb = gtk_check_button_new_with_label("Aux Type");
-  modDateCb = gtk_check_button_new_with_label("Mod Date");
-  formatCb = gtk_check_button_new_with_label("Format");
-  sizeCb = gtk_check_button_new_with_label("Size");
-  ratioCb = gtk_check_button_new_with_label("Ratio");
-  packedCb = gtk_check_button_new_with_label("Packed");
-  accessCb = gtk_check_button_new_with_label("Access");
-  defaultsButton = gtk_button_new_with_label("Defaults");
-
   gtk_box_pack_start(GTK_BOX(generalLeftVbox), pathnameCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), typeCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), auxTypeCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), modDateCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), formatCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), sizeCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), ratioCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), packedCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), accessCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalLeftVbox), defaultsButton, TRUE, TRUE, 0);
-
   gtk_widget_show(pathnameCb);
+
+  typeCb = gtk_check_button_new_with_label("Type");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), typeCb, TRUE, TRUE, 0);
   gtk_widget_show(typeCb);
+
+  auxTypeCb = gtk_check_button_new_with_label("Aux Type");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), auxTypeCb, TRUE, TRUE, 0);
   gtk_widget_show(auxTypeCb);
+
+  modDateCb = gtk_check_button_new_with_label("Mod Date");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), modDateCb, TRUE, TRUE, 0);
   gtk_widget_show(modDateCb);
+
+  formatCb = gtk_check_button_new_with_label("Format");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), formatCb, TRUE, TRUE, 0);
   gtk_widget_show(formatCb);
+
+  sizeCb = gtk_check_button_new_with_label("Size");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), sizeCb, TRUE, TRUE, 0);
   gtk_widget_show(sizeCb);
+
+  ratioCb = gtk_check_button_new_with_label("Ratio");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), ratioCb, TRUE, TRUE, 0);
   gtk_widget_show(ratioCb);
+
+  packedCb = gtk_check_button_new_with_label("Packed");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), packedCb, TRUE, TRUE, 0);
   gtk_widget_show(packedCb);
+
+  accessCb = gtk_check_button_new_with_label("Access");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), accessCb, TRUE, TRUE, 0);
   gtk_widget_show(accessCb);
+
+  defaultsButton = gtk_button_new_with_label("Defaults");
+  gtk_box_pack_start(GTK_BOX(generalLeftVbox), defaultsButton, TRUE, TRUE, 0);
   gtk_widget_show(defaultsButton);
+
 
   /* Left spacer */
   generalLeftSpacerBox = gtk_button_new_with_label(" ");
@@ -358,57 +384,56 @@ void preferences()
   gtk_widget_show(generalRightVbox);
 
   nufxArchivesFrame = gtk_frame_new("NuFX (ShrinkIt) archives");
-  filenameMungingFrame = gtk_frame_new("Filename munging");
-  systemFrame = gtk_frame_new("System");
-  miscellaneousFrame = gtk_frame_new("Miscellaneous");
-
   gtk_box_pack_start(GTK_BOX(generalRightVbox), nufxArchivesFrame, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalRightVbox), filenameMungingFrame, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalRightVbox), systemFrame, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(generalRightVbox), miscellaneousFrame, TRUE, TRUE, 0);
-
   gtk_widget_show(nufxArchivesFrame);
-  gtk_widget_show(filenameMungingFrame);
-  gtk_widget_show(systemFrame);
-  gtk_widget_show(miscellaneousFrame);
-
   nufxArchivesVbox = gtk_vbox_new(FALSE, 0);
-  filenameMungingVbox = gtk_vbox_new(FALSE, 0);
-  systemVbox = gtk_vbox_new(FALSE, 0);
-  miscellaneousVbox = gtk_vbox_new(FALSE, 0);
-
   gtk_container_add(GTK_CONTAINER(nufxArchivesFrame), nufxArchivesVbox);
-  gtk_container_add(GTK_CONTAINER(filenameMungingFrame), filenameMungingVbox);
-  gtk_container_add(GTK_CONTAINER(systemFrame), systemVbox);
-  gtk_container_add(GTK_CONTAINER(miscellaneousFrame), miscellaneousVbox);
-
   gtk_widget_show(nufxArchivesVbox);
+
+  filenameMungingFrame = gtk_frame_new("Filename munging");
+  gtk_box_pack_start(GTK_BOX(generalRightVbox), filenameMungingFrame, TRUE, TRUE, 0);
+  gtk_widget_show(filenameMungingFrame);
+  filenameMungingVbox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(filenameMungingFrame), filenameMungingVbox);
   gtk_widget_show(filenameMungingVbox);
+
+  systemFrame = gtk_frame_new("System");
+  gtk_box_pack_start(GTK_BOX(generalRightVbox), systemFrame, TRUE, TRUE, 0);
+  gtk_widget_show(systemFrame);
+  systemVbox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(systemFrame), systemVbox);
   gtk_widget_show(systemVbox);
+
+  miscellaneousFrame = gtk_frame_new("Miscellaneous");
+  gtk_box_pack_start(GTK_BOX(generalRightVbox), miscellaneousFrame, TRUE, TRUE, 0);
+  gtk_widget_show(miscellaneousFrame);
+  miscellaneousVbox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(miscellaneousFrame), miscellaneousVbox);
   gtk_widget_show(miscellaneousVbox);
+
 
   /* NuFX frame */
   mimicShrinkitQuirksCb = gtk_check_button_new_with_label("Mimic ShrinkIt Quirks");
-  handleBadMacArchivesCb = gtk_check_button_new_with_label("Handle \"bad Mac\" archives");
-  reduceErrorCheckingCb = gtk_check_button_new_with_label("Reduce error checking (not recommended)");
-
   gtk_box_pack_start(GTK_BOX(nufxArchivesVbox), mimicShrinkitQuirksCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(nufxArchivesVbox), handleBadMacArchivesCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(nufxArchivesVbox), reduceErrorCheckingCb, TRUE, TRUE, 0);
-
   gtk_widget_show(mimicShrinkitQuirksCb);
+
+  handleBadMacArchivesCb = gtk_check_button_new_with_label("Handle \"bad Mac\" archives");
+  gtk_box_pack_start(GTK_BOX(nufxArchivesVbox), handleBadMacArchivesCb, TRUE, TRUE, 0);
   gtk_widget_show(handleBadMacArchivesCb);
+
+  reduceErrorCheckingCb = gtk_check_button_new_with_label("Reduce error checking (not recommended)");
+  gtk_box_pack_start(GTK_BOX(nufxArchivesVbox), reduceErrorCheckingCb, TRUE, TRUE, 0);
   gtk_widget_show(reduceErrorCheckingCb);
 
   /* Filename munging frame */
   displayDOS33FilenamesCb = gtk_check_button_new_with_label("Display DOS 3.3 Filenames in lower case");
-  showSpacesAsUnderscoresCb = gtk_check_button_new_with_label("Show spaces as underscores");
-
   gtk_box_pack_start(GTK_BOX(filenameMungingVbox), displayDOS33FilenamesCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(filenameMungingVbox), showSpacesAsUnderscoresCb, TRUE, TRUE, 0);
-
   gtk_widget_show(displayDOS33FilenamesCb);
+
+  showSpacesAsUnderscoresCb = gtk_check_button_new_with_label("Show spaces as underscores");
+  gtk_box_pack_start(GTK_BOX(filenameMungingVbox), showSpacesAsUnderscoresCb, TRUE, TRUE, 0);
   gtk_widget_show(showSpacesAsUnderscoresCb);
+
 
   /* System frame */
   fileTypeAssociationsButton = gtk_button_new_with_label("File type associations");
@@ -419,12 +444,11 @@ void preferences()
 
   /* Miscellaneous frame */
   stripPathnamesWhenPastingFilesCb = gtk_check_button_new_with_label("Strip pathnames when pasting files");
-  beepWhenActionsCompleteSuccessfullyCb = gtk_check_button_new_with_label("Beep when actions complete successfully");
-
   gtk_box_pack_start(GTK_BOX(miscellaneousVbox), stripPathnamesWhenPastingFilesCb, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(miscellaneousVbox), beepWhenActionsCompleteSuccessfullyCb, TRUE, TRUE, 0);
-
   gtk_widget_show(stripPathnamesWhenPastingFilesCb);
+
+  beepWhenActionsCompleteSuccessfullyCb = gtk_check_button_new_with_label("Beep when actions complete successfully");
+  gtk_box_pack_start(GTK_BOX(miscellaneousVbox), beepWhenActionsCompleteSuccessfullyCb, TRUE, TRUE, 0);
   gtk_widget_show(beepWhenActionsCompleteSuccessfullyCb);
 
   /* Right spacer */
@@ -805,6 +829,49 @@ void preferences()
   gtk_widget_show(folderForTemporaryFilesLabel);
   gtk_box_pack_start(GTK_BOX(filesVbox), folderForTemporaryFilesLabel, TRUE, TRUE, 0);
 
+  folderForTemporaryFilesHbox = gtk_hbox_new(FALSE, 0);
+
+  gtk_container_add(GTK_CONTAINER(filesVbox), folderForTemporaryFilesHbox);
+
+  gtk_widget_show(folderForTemporaryFilesHbox);
+
+  folderForTemporaryFilesEntry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(folderForTemporaryFilesEntry), 255);
+  gtk_widget_set_size_request(folderForTemporaryFilesEntry, 350, 32);
+  gtk_box_pack_start(GTK_BOX(folderForTemporaryFilesHbox), folderForTemporaryFilesEntry, TRUE, TRUE, 0);
+  gtk_widget_show(folderForTemporaryFilesEntry);
+
+  folderForTemporaryFilesImage = gtk_image_new();
+  gtk_image_set_from_file(GTK_IMAGE(folderForTemporaryFilesImage), "images/openTb.png");
+  folderForTemporaryFilesButton = gtk_button_new();
+  gtk_widget_set_size_request(folderForTemporaryFilesButton, 32, 32);
+  gtk_button_set_image((GtkButton *)folderForTemporaryFilesButton, folderForTemporaryFilesImage);
+
+  gtk_box_pack_start(GTK_BOX(folderForTemporaryFilesHbox), folderForTemporaryFilesButton, TRUE, TRUE, 0);
+
+  /* You should be getting used to seeing most of these functions by now */
+  gtk_signal_connect(GTK_OBJECT(folderForTemporaryFilesButton), "clicked",
+                     GTK_SIGNAL_FUNC(select_temporary_files_folder),
+                     (gpointer)"Select Folder");
+
+  gtk_widget_show(folderForTemporaryFilesImage);
+  gtk_widget_show(folderForTemporaryFilesButton);
+
+  externalFileViewerExtensionsLabel = gtk_label_new("External file viewer extensions (separated by semicolons):");
+  gtk_widget_show(externalFileViewerExtensionsLabel);
+  gtk_box_pack_start(GTK_BOX(filesVbox), externalFileViewerExtensionsLabel, TRUE, TRUE, 0);
+
+  externalFileViewerExtensionsEntry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(externalFileViewerExtensionsEntry), 255);
+  gtk_widget_show(externalFileViewerExtensionsEntry);
+  gtk_box_pack_start(GTK_BOX(filesVbox), externalFileViewerExtensionsEntry, TRUE, TRUE, 0);
+
+  /* spacer */
+  filesSpacer = gtk_button_new_with_label(" ");
+  gtk_widget_set_size_request(filesSpacer, 256, 256);
+  gtk_box_pack_start(GTK_BOX(filesVbox), filesSpacer, TRUE, TRUE, 0);
+  gtk_widget_show(filesSpacer);
+
 
   /* spacer */
   /*spacerBox = gtk_button_new_with_label(" ");
@@ -827,7 +894,7 @@ void preferences()
 
   gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
                      GTK_SIGNAL_FUNC(okfunc_create_disk_image),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow "Cancel" to be a default --- */
   GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
@@ -850,7 +917,7 @@ void preferences()
 
   gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
                      GTK_SIGNAL_FUNC(close_dialog),
-                     dialog_window);
+                     dialog);
 
   /* --- Allow "Cancel" to be a default --- */
   GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
@@ -870,7 +937,7 @@ void preferences()
 
   gtk_signal_connect(GTK_OBJECT(apply_button), "clicked",
                      GTK_SIGNAL_FUNC(apply_func_preferences),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the "Apply" button to the dialog --- */
   gtk_box_pack_start(GTK_BOX(actionHbox), apply_button, TRUE, TRUE, 0);
@@ -887,7 +954,7 @@ void preferences()
 
   gtk_signal_connect(GTK_OBJECT(help_button), "clicked",
                      GTK_SIGNAL_FUNC(help_func_preferences),
-                     dialog_window);
+                     dialog);
 
   /* --- Add the "Help" button to the dialog --- */
   gtk_box_pack_start(GTK_BOX(actionHbox), help_button, TRUE, TRUE, 0);
@@ -896,6 +963,6 @@ void preferences()
   gtk_widget_show(help_button);
 
   /* --- Only this window can be used for now --- */
-  gtk_grab_add(dialog_window);
+  gtk_grab_add(dialog);
 }
 

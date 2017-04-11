@@ -14,13 +14,13 @@
  */
 void help_func_select_volume(GtkWidget *widget, gpointer data)
 {
-    /* --- Display message --- */
-    g_print("Help function goes here.\n");
+  /* --- Display message --- */
+  g_print("Help function for select volume goes here.\n");
 
-    /* --- Close it. --- */
-    gtk_widget_destroy(GTK_WIDGET(data));
+  /* --- Close it. --- */
+  gtk_widget_destroy(GTK_WIDGET(data));
 
-    /* Now open the help dialog */
+  /* Now open the help dialog */
 /*FIXME*/
 }
 
