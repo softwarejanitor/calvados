@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 
+#include "calvados.h"
+
 /*
  *
  * invert_selection()

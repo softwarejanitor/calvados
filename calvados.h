@@ -12,6 +12,12 @@
 #define LIST_WIDTH 1280
 #define LIST_HEIGHT 705
 
+enum {
+  COL_VOLUME_OR_DEVICE_NAME = 0,
+  COL_REMARK,
+  NUM_SELECT_VOLUME_COLS
+};
+
 /* Prototypes */
 void close_dialog(GtkWidget *widget, gpointer data);
 void closing_dialog(GtkWidget *widget, gpointer data);
@@ -66,4 +72,24 @@ void paste_special(GtkWidget *widget, gpointer data);
 void find(GtkWidget *widget, gpointer data);
 void select_all(GtkWidget *widget, gpointer data);
 void invert_selection(GtkWidget *widget, gpointer data);
+void create_subdirectory(GtkWidget *widget, gpointer data);
+void open_as_disk_image(GtkWidget *widget, gpointer data);
+void edit_attributes(GtkWidget *widget, gpointer data);
+void rename_volume(GtkWidget *widget, gpointer data);
+void convert_to_disk_image(GtkWidget *widget, gpointer data);
+void convert_to_archive_file(GtkWidget *widget, gpointer data);
+void import_file_from_wav(GtkWidget *widget, gpointer data);
+void import_bas_from_text(GtkWidget *widget, gpointer data);
+void contents(GtkWidget *widget, gpointer data);
+void visit_website(GtkWidget *widget, gpointer data);
+void volume_copier_open_volume(GtkWidget *widget, gpointer data);
+void volume_copier_open_file(GtkWidget *widget, gpointer data);
+void twomg_properties_editor(GtkWidget *widget, gpointer data);
+void eol_scanner(GtkWidget *widget, gpointer data);
+void do_eol_scan(char *filename);
+void do_2mg_edit(char *filename);
+void do_volume_copier_open_file(char *filename);
+void okfunc_volume_copier_open_volume(GtkWidget *widget, gpointer data);
+void help_func_volume_copier_open_volume(GtkWidget *widget, gpointer data);
+void do_bulk_disk_converter(char *filename);
 

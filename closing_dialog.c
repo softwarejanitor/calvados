@@ -11,6 +11,6 @@
  */
 void closing_dialog(GtkWidget *widget, gpointer data)
 {
-    gtk_grab_remove(GTK_WIDGET(widget));
+  gtk_grab_remove(GTK_WIDGET(widget));
 }
 

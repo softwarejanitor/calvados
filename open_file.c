@@ -46,9 +46,9 @@ void open_file()
 
   diskImagesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(diskImagesFilt, "Disk Images");
-  gtk_file_filter_add_pattern(diskImagesFilt, "*.[Ss][Hh][Kk]");
-  gtk_file_filter_add_pattern(diskImagesFilt, "*.[Ss][Dd][Kk]");
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Dd][Ss][Kk]");
+  gtk_file_filter_add_pattern(diskImagesFilt, "*.[Ss][Dd][Kk]");
+  gtk_file_filter_add_pattern(diskImagesFilt, "*.[Ss][Hh][Kk]");
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Pp][Oo]");
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Dd][Oo]");
   gtk_file_filter_add_pattern(diskImagesFilt, "*.[Dd]13");

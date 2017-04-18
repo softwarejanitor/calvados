@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 
+#include "calvados.h"
+
 /*
  *
  * reopen_menu_item()
@@ -9,7 +11,7 @@
  */
 void reopen_menu_item(GtkWidget *widget, gpointer data)
 {
-    /* --- Display message --- */
-    g_print("Reopen function goes here.\n");
+  /* --- Display message --- */
+  g_print("Reopen function goes here.\n");
 }
 

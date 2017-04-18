@@ -1,33 +1,33 @@
 #include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 
 #include "calvados.h"
 
 /*
  *
- * select_volume()
+ * rename_volume()
  *
- * Select volume dialog box
+ * rename_volume Volume from the menu.
  *
  */
-void select_volume(GtkWidget *widget, gpointer data)
+void rename_volume(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
-  GtkWidget *ok_button;
-  GtkWidget *cancel_button;
-  GtkWidget *help_button;
-  GtkWidget *showLabel;
-  GList *showComboItems = NULL;
-  GtkWidget *showCombo;
-  GtkWidget *showHbox;
+  GtkWidget *selectVolumeLabel;
+  /*GtkWidget *selectVolumeEntry;*/
   GtkListStore *store;
   /*GtkTreeIter iter;*/
   GtkCellRenderer *renderer;
   GtkTreeModel *model;
   GtkWidget *view;
-  GtkWidget *openAsReadOnlyCb;
+  GtkWidget *newNameLabel;
+  GtkWidget *newNameEntry;
+  /*GtkWidget *hbox1;*/
+  GtkWidget *ok_button;
+  GtkWidget *cancel_button;
+  GtkWidget *help_button;
 
-  g_print("data=%s\n", (char *)data);
+  /* --- Display message --- */
+  /*g_print("rename_volume function goes here.\n");*/
 
   /* --- Create the dialog --- */
   dialog = gtk_dialog_new();
@@ -38,46 +38,21 @@ void select_volume(GtkWidget *widget, gpointer data)
                       &dialog);
 
   /* --- Set the title --- */
-  gtk_window_set_title(GTK_WINDOW(dialog), "Select Volume");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Rename volume");
 
   /* --- Add a small border --- */
   gtk_container_border_width(GTK_CONTAINER(dialog), 5);
 
-  showHbox = gtk_hbox_new(FALSE, 0);
+  /*hbox1 = gtk_hbox_new(FALSE, 0);
+  gtk_widget_show(hbox1);*/
+  selectVolumeLabel = gtk_label_new("Select a volume to rename: ");
 
-  showLabel = gtk_label_new("Show: ");
-  gtk_misc_set_alignment(GTK_MISC(showLabel), 0, 0.5);
+  gtk_widget_show(selectVolumeLabel);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), selectVolumeLabel, TRUE, TRUE, 0);
 
-  /*
-   * --- Create a list of the items first
-   */
-  showComboItems = g_list_append(showComboItems, "Both logical and physical");
-  showComboItems = g_list_append(showComboItems, "Logical volumes");
-  showComboItems = g_list_append(showComboItems, "Physical disks");
-
-  /* --- Make a combo box. --- */
-  showCombo = gtk_combo_new();
-
-  /* --- Create the drop down portion of the combo --- */
-  gtk_combo_set_popdown_strings(GTK_COMBO(showCombo), showComboItems);
-
-  /* --- Default the text in the field to a value --- */
-  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(showCombo)->entry), "Both logical and physical");
-
-  /* --- Make the edit portion non-editable.  They can pick a
-   *     value from the drop down, they just can't end up with
-   *     a value that's not in the drop down.
-   */
-  gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(showCombo)->entry), FALSE);
-
-  gtk_box_pack_start(GTK_BOX(showHbox), showLabel, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(showHbox), showCombo, TRUE, TRUE, 0);
-
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), showHbox, TRUE, TRUE, 0);
-
-  gtk_widget_show(showLabel);
-  gtk_widget_show(showCombo);
-  gtk_widget_show(showHbox);
+  /*selectVolumeEntry = gtk_entry_new();
+  gtk_widget_show(selectVolumeEntry);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), selectVolumeEntry, TRUE, TRUE, 0);*/
 
   store = gtk_list_store_new(NUM_SELECT_VOLUME_COLS, G_TYPE_STRING, G_TYPE_UINT);
 
@@ -124,12 +99,15 @@ void select_volume(GtkWidget *widget, gpointer data)
 
   gtk_widget_show(view);
 
-  openAsReadOnlyCb = gtk_check_button_new_with_label("Open as read-only (writing to the volume will be disabled)");
-  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(openAsReadOnlyCb), TRUE);
+  newNameLabel = gtk_label_new("New name: ");
+  gtk_widget_show(newNameLabel);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), newNameLabel, TRUE, TRUE, 0);
 
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), openAsReadOnlyCb, TRUE, TRUE, 0);
+  newNameEntry = gtk_entry_new();
+  gtk_widget_show(newNameEntry);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), newNameEntry, TRUE, TRUE, 0);
 
-  gtk_widget_show(openAsReadOnlyCb);
+  /* FIXME -- need to add path separator widgets here */
 
   /*
    * --- OK button

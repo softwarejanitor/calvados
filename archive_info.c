@@ -1,5 +1,6 @@
 #include <string.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "calvados.h"
  
@@ -7,12 +8,14 @@
 #define SHK 0
 #define DSK 1
 
+extern char *open_file_ptr;
+
 /*
  *
  * archive_info()
  *
  */
-void archive_info()
+void archive_info(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
   GtkWidget *vbox;
@@ -22,6 +25,7 @@ void archive_info()
   GtkWidget *archiveInfoVboxl;
   GtkWidget *archiveInfoVboxr;
   GtkWidget *filenameLabel;
+  GtkWidget *filenameText;
   GtkWidget *formatLabel;
   GtkWidget *recordsLabel;
   GtkWidget *masterVersionLabel;
@@ -38,13 +42,38 @@ void archive_info()
   GtkWidget *diskCharacteristicsInfoVboxl;
   GtkWidget *diskCharacteristicsInfoVboxr;
 
+  GtkWidget *subVolumeLabel;
+  GtkWidget *subVolumeCombo;
+  GtkWidget *sectorOrderingLabel;
+  GtkWidget *sectorOrderingText;
+  GtkWidget *filesystemFormatLabel;
+  GtkWidget *filesystemFormatText;
+  GtkWidget *filesDirectoriesLabel;
+  GtkWidget *filesDirectoriesText;
+  GtkWidget *storageCapacityLabel;
+  GtkWidget *storageCapacityText;
+  GtkWidget *freeSpaceLabel;
+  GtkWidget *freeSpaceText;
+  GtkWidget *writeableFormatLabel;
+  GtkWidget *writeableFormatText;
+  GtkWidget *damagedLabel;
+  GtkWidget *damagedText;
+  GtkWidget *notesLabel;
+  GtkWidget *notesText;
+
   GtkWidget *hbox2;
   GtkWidget *helpButton;
   GtkWidget *doneButton;
   int archive_type = 0;
   char dialog_title[256];
 
-  g_print("archive info goes here\n");
+  /*g_print("archive info goes here\n");*/
+
+  if (strstr(open_file_ptr, ".shk") == 0) {
+    archive_type = SHK;
+  } else if (strstr(open_file_ptr, ".dsk") == 0) {
+    archive_type = DSK;
+  }
 
   /* FIXME -- need to detect what type of archive we are looking at */
   if (archive_type == SHK) {
@@ -134,6 +163,11 @@ void archive_info()
     gtk_box_pack_start(GTK_BOX(fileCharacteristicsVboxl), filenameLabel, TRUE, TRUE, 0);
     gtk_widget_show(filenameLabel);
 
+    filenameText = gtk_label_new("");
+    gtk_widget_set_size_request(filenameText, 256, 32);
+    gtk_box_pack_start(GTK_BOX(fileCharacteristicsVboxr), filenameText, TRUE, TRUE, 0);
+    gtk_widget_show(filenameText);
+
     diskCharacteristicsFrame = gtk_frame_new("Disk Characteristics");
     gtk_box_pack_start(GTK_BOX(vbox), diskCharacteristicsFrame, TRUE, TRUE, 0);
     gtk_widget_show(diskCharacteristicsFrame);
@@ -142,6 +176,86 @@ void archive_info()
     gtk_container_add(GTK_CONTAINER(diskCharacteristicsFrame), diskCharacteristicsHbox);
     gtk_widget_show(diskCharacteristicsHbox);
 
+    diskCharacteristicsInfoVboxl = gtk_vbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsHbox), diskCharacteristicsInfoVboxl, TRUE, TRUE, 0);
+    gtk_widget_show(diskCharacteristicsInfoVboxl);
+
+    diskCharacteristicsInfoVboxr = gtk_vbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsHbox), diskCharacteristicsInfoVboxr, TRUE, TRUE, 0);
+    gtk_widget_show(diskCharacteristicsInfoVboxr);
+
+    subVolumeLabel = gtk_label_new("Sub-Volume:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), subVolumeLabel, TRUE, TRUE, 0);
+    gtk_widget_show(subVolumeLabel);
+
+    sectorOrderingLabel = gtk_label_new("Sector Ordering:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), sectorOrderingLabel, TRUE, TRUE, 0);
+    gtk_widget_show(sectorOrderingLabel);
+
+    filesystemFormatLabel = gtk_label_new("Filesystem Format:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), filesystemFormatLabel, TRUE, TRUE, 0);
+    gtk_widget_show(filesystemFormatLabel);
+
+    filesDirectoriesLabel = gtk_label_new("Files+Directories:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), filesDirectoriesLabel, TRUE, TRUE, 0);
+    gtk_widget_show(filesDirectoriesLabel);
+
+    storageCapacityLabel = gtk_label_new("Storage Capacity:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), storageCapacityLabel, TRUE, TRUE, 0);
+    gtk_widget_show(storageCapacityLabel);
+
+    freeSpaceLabel = gtk_label_new("Free Space:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), freeSpaceLabel, TRUE, TRUE, 0);
+    gtk_widget_show(freeSpaceLabel);
+
+    writeableFormatLabel = gtk_label_new("Writeable format?");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), writeableFormatLabel, TRUE, TRUE, 0);
+    gtk_widget_show(writeableFormatLabel);
+
+    damagedLabel = gtk_label_new("Damaged?");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), damagedLabel, TRUE, TRUE, 0);
+    gtk_widget_show(damagedLabel);
+
+    notesLabel = gtk_label_new("Notes:");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxl), notesLabel, TRUE, TRUE, 0);
+    gtk_widget_show(notesLabel);
+
+    subVolumeCombo = gtk_label_new("");
+    gtk_widget_set_size_request(subVolumeCombo, 256, 32);
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), subVolumeCombo, TRUE, TRUE, 0);
+    gtk_widget_show(subVolumeCombo);
+
+    sectorOrderingText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), sectorOrderingText, TRUE, TRUE, 0);
+    gtk_widget_show(sectorOrderingText);
+
+    filesystemFormatText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), filesystemFormatText, TRUE, TRUE, 0);
+    gtk_widget_show(filesystemFormatText);
+
+    filesDirectoriesText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), filesDirectoriesText, TRUE, TRUE, 0);
+    gtk_widget_show(filesDirectoriesText);
+
+    storageCapacityText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), storageCapacityText, TRUE, TRUE, 0);
+    gtk_widget_show(storageCapacityText);
+
+    freeSpaceText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), freeSpaceText, TRUE, TRUE, 0);
+    gtk_widget_show(freeSpaceText);
+
+    writeableFormatText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), writeableFormatText, TRUE, TRUE, 0);
+    gtk_widget_show(writeableFormatText);
+
+    damagedText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), damagedText, TRUE, TRUE, 0);
+    gtk_widget_show(damagedText);
+
+    notesText = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(diskCharacteristicsInfoVboxr), notesText, TRUE, TRUE, 0);
+    gtk_widget_show(notesText);
   }
 
   hbox2 = gtk_hbox_new(FALSE, 0);

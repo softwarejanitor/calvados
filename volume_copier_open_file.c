@@ -5,19 +5,20 @@
 
 /*
  *
- * add_disk_image()
+ * volume_copier_open_file()
  *
- * Display add disk image dialog
+ * volume_copier_open_file Volume from the menu.
  *
  */
-void add_disk_image(GtkWidget *widget, gpointer data)
+void volume_copier_open_file(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
   gint res;
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
 
-  /*g_print("add disk image goes here\n");*/
+  /* --- Display message --- */
+  /*g_print("volume_copier_open_file function goes here.\n");*/
 
   diskImagesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(diskImagesFilt, "Disk Images");
@@ -46,7 +47,7 @@ void add_disk_image(GtkWidget *widget, gpointer data)
   gtk_file_filter_set_name(allFilesFilt, "All Files");
   gtk_file_filter_add_pattern(allFilesFilt, "*");
 
-  dialog = gtk_file_chooser_dialog_new("Add Disk Image",
+  dialog = gtk_file_chooser_dialog_new("Select disk image file",
                                        NULL,
                                        GTK_FILE_CHOOSER_ACTION_OPEN,
                                        GTK_STOCK_CANCEL,
@@ -63,7 +64,7 @@ void add_disk_image(GtkWidget *widget, gpointer data)
     char *filename;
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
     filename = gtk_file_chooser_get_filename(chooser);
-    do_open_file(filename);
+    do_volume_copier_open_file(filename);
     g_free(filename);
   }
 

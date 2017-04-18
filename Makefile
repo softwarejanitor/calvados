@@ -18,7 +18,13 @@ SRCS=calvados.c select_volume.c closing_dialog.c close_dialog.c show_about.c \
 	recompress_files.c show_error.c file_viewer.c donefunc_file_viewer.c \
 	help_func_file_viewer.c add_disk_image.c test.c findfunc_file_viewer.c \
 	bulk_disk_image_converter.c close.c save_changes.c reopen.c copy.c paste.c \
-	paste_special.c find.c select_all.c invert_selection.c
+	paste_special.c find.c select_all.c invert_selection.c create_subdirectory.c \
+	open_as_disk_image.c edit_attributes.c rename_volume.c convert_to_disk_image.c \
+	convert_to_archive_file.c import_file_from_wav.c import_bas_from_text.c \
+	contents.c visit_website.c volume_copier_open_volume.c volume_copier_open_file.c \
+	twomg_properties_editor.c eol_scanner.c do_eol_scan.c do_2mg_edit.c \
+	do_volume_copier_open_file.c okfunc_volume_copier_open_volume.c \
+	help_func_volume_copier_open_volume.c do_bulk_disk_converter.c
 OBJS=$(SRCS:.c=.o)
 HEADERS=calvados.h
 CC=gcc

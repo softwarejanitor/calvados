@@ -21,12 +21,22 @@ GtkWidget *addTypeExtensionCb;
 
 /* FIXME -- need to add a callback to the folder chooser to un-grey extract selected files radio button when there are selections */
 
+/*
+ *
+ * filesToExtractRbCallback()
+ *
+ */
 void filesToExtractRbCallback(GtkWidget *widget, gpointer *data)
 {
   g_print("clicked %s\n", (char *)data);
 }
 
 
+/*
+ *
+ * textConversionRbCallback2()
+ *
+ */
 void textConversionRbCallback2(GtkWidget *widget, gpointer *data)
 {
   /*g_print("clicked %s\n", (char *)data);*/
@@ -39,6 +49,11 @@ void textConversionRbCallback2(GtkWidget *widget, gpointer *data)
 }
 
 
+/*
+ *
+ * configureToPreserveAppleIIFormatsCallback()
+ *
+ */
 void configureToPreserveAppleIIFormatsCallback(GtkWidget *widget, gpointer *data)
 {
   g_print("clicked %s\n", (char *)data);
@@ -57,6 +72,11 @@ void configureToPreserveAppleIIFormatsCallback(GtkWidget *widget, gpointer *data
 }
 
 
+/*
+ *
+ * configureForEasyAccessInLinuxCallback()
+ *
+ */
 void configureForEasyAccessInLinuxCallback(GtkWidget *widget, gpointer *data)
 {
   g_print("clicked %s\n", (char *)data);
@@ -126,7 +146,7 @@ void extract_files()
     homedir = pw->pw_dir;
   }
 
-  g_print("homedir=%s", homedir);
+  /*g_print("homedir=%s", homedir);*/
 
   /* --- Create the dialog --- */
   dialog = gtk_dialog_new();

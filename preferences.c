@@ -52,7 +52,7 @@ static void page_switch(GtkWidget *widget,
                          GtkNotebookPage *page,
                          gint page_num)
 {
-    g_print("page switch\n");
+  g_print("page switch\n");
 }
 
 

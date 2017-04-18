@@ -13,7 +13,7 @@ void recompress_files(GtkWidget *widget, gpointer data)
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
 
-  g_print("recompress files goes here\n");
+  /*g_print("recompress files goes here\n");*/
 
   /* --- Create the dialog --- */
   dialog = gtk_dialog_new();

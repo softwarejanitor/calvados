@@ -9,7 +9,7 @@
  * Show an error message dialog box
  *
  */
-void show_error(GtkWidget *widget, gpointer data, char *message)
+void show_error(GtkWidget *widget, gpointer data, char *errmsg)
 {
   GtkWidget *dialog;
 
@@ -19,7 +19,7 @@ void show_error(GtkWidget *widget, gpointer data, char *message)
             GTK_DIALOG_DESTROY_WITH_PARENT,
             GTK_MESSAGE_ERROR,
             GTK_BUTTONS_OK,
-            message);
+            errmsg);
 
   gtk_window_set_title(GTK_WINDOW(dialog), "Error");
   gtk_dialog_run(GTK_DIALOG(dialog));

@@ -15,7 +15,7 @@ void select_first_sst_image(GtkWidget *widget, gpointer data)
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
 
-  g_print("Select first sst image goes here\n");
+  /*g_print("Select first sst image goes here\n");*/
 
 
   diskImagesFilt = gtk_file_filter_new();

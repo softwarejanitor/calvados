@@ -5,14 +5,14 @@
 
 /* 
  *
- * do_image_converter()
+ * do_bulk_disk_converter()
  *
  * Convert an image.
  *
  */
-void do_image_converter(char *filename)
+void do_bulk_disk_converter(char *filename)
 {
   /* --- Display message --- */
-  g_print("Image converter function goes here.\n");
+  g_print("bulk_disk_converter function goes here.\n");
 }
 

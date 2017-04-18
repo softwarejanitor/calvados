@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 
+#include "calvados.h"
+
 /*
  *
  * save_changes()
@@ -9,7 +11,7 @@
  */
 void save_changes(GtkWidget *widget, gpointer data)
 {
-    /* --- Display message --- */
-    g_print("Save Changes function goes here.\n");
+  /* --- Display message --- */
+  g_print("Save Changes function goes here.\n");
 }
 

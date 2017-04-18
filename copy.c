@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 
+#include "calvados.h"
+
 /*
  *
  * copy_menu_item()
@@ -9,7 +11,7 @@
  */
 void copy_menu_item(GtkWidget *widget, gpointer data)
 {
-    /* --- Display message --- */
-    g_print("Copy function goes here.\n");
+  /* --- Display message --- */
+  g_print("Copy function goes here.\n");
 }
 

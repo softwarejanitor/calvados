@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 
+#include "calvados.h"
+
 /*
  *
  * paste_special()
@@ -9,7 +11,7 @@
  */
 void paste_special(GtkWidget *widget, gpointer data)
 {
-    /* --- Display message --- */
-    g_print("Paste Special function goes here.\n");
+  /* --- Display message --- */
+  g_print("Paste Special function goes here.\n");
 }
 

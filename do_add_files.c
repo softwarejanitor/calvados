@@ -12,6 +12,6 @@
  */
 void do_add_files(char *filename)
 {
-    g_print("Do add files goes here.\n");
+  g_print("Do add files goes here.\n");
 }
 

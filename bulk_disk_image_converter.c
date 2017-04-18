@@ -17,7 +17,7 @@ void bulk_disk_image_converter(GtkWidget *widget, gpointer data)
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
 
-  g_print("bulk disk image convert goes here\n");
+  /*g_print("bulk disk image convert goes here\n");*/
 
   diskImagesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(diskImagesFilt, "Disk Images");
@@ -63,7 +63,7 @@ void bulk_disk_image_converter(GtkWidget *widget, gpointer data)
     char *filename;
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
     filename = gtk_file_chooser_get_filename(chooser);
-    do_open_file(filename);
+    do_bulk_disk_converter(filename);
     g_free(filename);
   }
 

@@ -4,21 +4,24 @@
 
 /*
  *
- * edit_comment()
- *
- * Edit a comment about a file.
+ * create_subdirectory()
  *
  */
-void edit_comment(GtkWidget *widget, gpointer data)
+void create_subdirectory(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
-  GtkTextBuffer *commentText;
-  GtkTextView *commentView;
+  GtkWidget *parentDirectoryLabel;
+  GtkWidget *parentDirectoryEntry;
+  GtkWidget *newSubdirectoryNameLabel;
+  GtkWidget *newSubdirectoryNameEntry;
+  /*GtkWidget *hbox1;*/
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
   GtkWidget *help_button;
 
-  /*g_print("edit comment goes here\n");*/
+  /*g_print("Rename file goes here.\n");*/
+
+  /*g_print("data=%s\n", (char *)data);*/
 
   /* --- Create the dialog --- */
   dialog = gtk_dialog_new();
@@ -29,15 +32,31 @@ void edit_comment(GtkWidget *widget, gpointer data)
                       &dialog);
 
   /* --- Set the title --- */
-  gtk_window_set_title(GTK_WINDOW(dialog), "Edit Comment");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Create Subdirectory");
 
   /* --- Add a small border --- */
   gtk_container_border_width(GTK_CONTAINER(dialog), 5);
 
-  commentView = gtk_text_view_new();
-  gtk_widget_set_size_request(commentView, 320, 256);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), commentView, TRUE, TRUE, 0);
-  gtk_widget_show(commentView);
+  /*hbox1 = gtk_hbox_new(FALSE, 0);
+  gtk_widget_show(hbox1);*/
+
+  parentDirectoryLabel = gtk_label_new("Parent directory: ");
+  gtk_widget_show(parentDirectoryLabel);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), parentDirectoryLabel, TRUE, TRUE, 0);
+
+  parentDirectoryEntry = gtk_entry_new();
+  gtk_widget_show(parentDirectoryEntry);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), parentDirectoryEntry, TRUE, TRUE, 0);
+
+  newSubdirectoryNameLabel = gtk_label_new("New subdirectory name: ");
+  gtk_widget_show(newSubdirectoryNameLabel);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), newSubdirectoryNameLabel, TRUE, TRUE, 0);
+
+  newSubdirectoryNameEntry = gtk_entry_new();
+  gtk_widget_show(newSubdirectoryNameEntry);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), newSubdirectoryNameEntry, TRUE, TRUE, 0);
+
+  /* FIXME -- need to add path separator widgets here */
 
   /*
    * --- OK button

@@ -4,21 +4,51 @@
 
 /*
  *
- * edit_comment()
+ * edit_attributes()
  *
- * Edit a comment about a file.
+ * Edit Attributes from the menu.
  *
  */
-void edit_comment(GtkWidget *widget, gpointer data)
+void edit_attributes(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
-  GtkTextBuffer *commentText;
-  GtkTextView *commentView;
+  GtkWidget *hbox1;
+  GtkWidget *vbox1l;
+  GtkWidget *vbox1r;
+  GtkWidget *hbox2;
+  GtkWidget *hbox3;
+  GtkWidget *vbox2;
+  GtkWidget *hbox4;
+  GtkWidget *hbox5;
+  GtkWidget *pathnameLabel;
+  GtkWidget *pathnameEntry;
+  GtkWidget *creationDateLabel;
+  GtkWidget *creationDateEntry;
+  GtkWidget *modificationDateLabel;
+  GtkWidget *modificationDateEntry;
+  GtkWidget *fileTypeLabel;
+  GtkWidget *fileTypeCombo;
+  GtkWidget *hfsTypeCb;
+  GtkWidget *hfsTypeEntry;
+  GtkWidget *auxTypeLabel;
+  GtkWidget *auxTypeEntry;
+  GtkWidget *creatorLabel;
+  GtkWidget *creatorEntry;
+  GtkWidget *typeDescriptorLabel;
+  GtkWidget *typeDescriptorEntry;
+  GtkWidget *accessLabel;
+  GtkWidget *readCb;
+  GtkWidget *backupCb;
+  GtkWidget *invisibleCb;
+  GtkWidget *writeCb;
+  GtkWidget *renameCb;
+  GtkWidget *deleteCb;
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
   GtkWidget *help_button;
 
-  /*g_print("edit comment goes here\n");*/
+  /* --- Display message --- */
+  /*g_print("edit_attributes function goes here.\n");*/
 
   /* --- Create the dialog --- */
   dialog = gtk_dialog_new();
@@ -33,11 +63,6 @@ void edit_comment(GtkWidget *widget, gpointer data)
 
   /* --- Add a small border --- */
   gtk_container_border_width(GTK_CONTAINER(dialog), 5);
-
-  commentView = gtk_text_view_new();
-  gtk_widget_set_size_request(commentView, 320, 256);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), commentView, TRUE, TRUE, 0);
-  gtk_widget_show(commentView);
 
   /*
    * --- OK button

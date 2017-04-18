@@ -35,6 +35,9 @@ GtkCellRenderer *mw_renderer;
 GtkTreeModel *mw_model;
 GtkWidget *mw_view;
 
+/* FIXME -- this needs to be done better. */
+char open_file_name[256];
+char *open_file_ptr;
 
 /*
  *
@@ -250,7 +253,7 @@ int main(int argc, char *argv[])
   GtkWidget *volumeCopierOpenFileMi;
   GtkWidget *mergeSSTImagesMi;
   GtkWidget *toolsSep2;
-  GtkWidget *TwoMGPropertiesEditorMi;
+  GtkWidget *twoMGPropertiesEditorMi;
   GtkWidget *EOLScannerMi;
 
   /* Help menu widgets */
@@ -314,6 +317,8 @@ int main(int argc, char *argv[])
 
   GtkWidget *statusbar;
 
+  open_file_ptr = (char *)open_file_name;
+
   /* Initialise GTK+ passing to it all command line arguments  */
   gtk_init(&argc, &argv);
 
@@ -322,6 +327,7 @@ int main(int argc, char *argv[])
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_window_set_default_size(GTK_WINDOW(window), WINDOW_WIDTH, WINDOW_HEIGHT);
   gtk_window_set_title(GTK_WINDOW(window), "Calvados");
+  gtk_window_set_icon_from_file(GTK_WINDOW(window), "images/calvados.png", NULL);
 
   /* Primary app vbox */
   vbox = gtk_vbox_new(FALSE, 0);
@@ -421,7 +427,7 @@ int main(int argc, char *argv[])
   g_signal_connect(G_OBJECT(archiveInfoMi), "activate", G_CALLBACK(archive_info), (gpointer)"archiveInfoMi");
 
   /* Hook up the print menu item to the print dialog box */
-  g_signal_connect(G_OBJECT(printMi), "activate", G_CALLBACK(print_page), (gpointer)"printMi");
+  g_signal_connect(G_OBJECT(printMi), "activate", G_CALLBACK(print_page), (gpointer)window);
 
   /* Edit menu bar items */
   editMi = gtk_menu_item_new_with_mnemonic("_Edit");
@@ -578,7 +584,7 @@ int main(int argc, char *argv[])
   volumeCopierOpenFileMi = gtk_menu_item_new_with_label("Volume Copier (open file)");
   mergeSSTImagesMi = gtk_menu_item_new_with_mnemonic("_Merge SST Images");
   toolsSep2 = gtk_separator_menu_item_new();
-  TwoMGPropertiesEditorMi = gtk_menu_item_new_with_label("2MG Properties Editor");
+  twoMGPropertiesEditorMi = gtk_menu_item_new_with_label("2MG Properties Editor");
   EOLScannerMi = gtk_menu_item_new_with_label("EOL Scanner");
 
   /* Set up tools menu */
@@ -591,7 +597,7 @@ int main(int argc, char *argv[])
   gtk_menu_shell_append(GTK_MENU_SHELL(toolsMenu), volumeCopierOpenFileMi);
   gtk_menu_shell_append(GTK_MENU_SHELL(toolsMenu), mergeSSTImagesMi);
   gtk_menu_shell_append(GTK_MENU_SHELL(toolsMenu), toolsSep2);
-  gtk_menu_shell_append(GTK_MENU_SHELL(toolsMenu), TwoMGPropertiesEditorMi);
+  gtk_menu_shell_append(GTK_MENU_SHELL(toolsMenu), twoMGPropertiesEditorMi);
   gtk_menu_shell_append(GTK_MENU_SHELL(toolsMenu), EOLScannerMi);
   /* Add Tools menu to menu bar */
   gtk_menu_shell_append(GTK_MENU_SHELL(menubar), toolsMi);
@@ -621,6 +627,12 @@ int main(int argc, char *argv[])
   /* connect 'view' menu item to the file viewer dialog event */
   g_signal_connect(G_OBJECT(viewMi), "activate", G_CALLBACK(file_viewer), (gpointer)"viewMi");
 
+  /* connect 'extract' menu item to the extract dialog event */
+  g_signal_connect(G_OBJECT(extractMi), "activate", G_CALLBACK(extract_files), (gpointer)"extractMi");
+
+  /* connect 'test' menu item to the test dialog event */
+  g_signal_connect(G_OBJECT(testMi), "activate", G_CALLBACK(test), (gpointer)"testMi");
+
   /* connect 'disk image' menu item to the create disk image dialog event */
   g_signal_connect(G_OBJECT(diskImageMi), "activate", G_CALLBACK(create_disk_image), (gpointer)"diskImageMi");
 
@@ -642,8 +654,41 @@ int main(int argc, char *argv[])
   /* connect 'recompress' menu item to the recompress dialog event */
   g_signal_connect(G_OBJECT(recompressMi), "activate", G_CALLBACK(recompress_files), (gpointer)"recompressMi");
 
+  /* connect 'add files' menu item to the add files dialog event */
+  g_signal_connect(G_OBJECT(addFilesMi), "activate", G_CALLBACK(add_files), (gpointer)"addFilesMi");
+
+  /* connect 'create subdirectory' menu item to the create subdirectory dialog event */
+  g_signal_connect(G_OBJECT(createSubdirectoryMi), "activate", G_CALLBACK(create_subdirectory), (gpointer)"createSubdirectoryMi");
+
+  /* connect 'open as disk image' menu item to the open as disk image dialog event */
+  g_signal_connect(G_OBJECT(openAsDiskImageMi), "activate", G_CALLBACK(open_as_disk_image), (gpointer)"openAsDiskImageMi");
+
+  /* connect 'Edit Attributes' menu item to the edit_attributes dialog event */
+  g_signal_connect(G_OBJECT(editAttributesMi), "activate", G_CALLBACK(edit_attributes), (gpointer)"editAttributesMi");
+
+  /* connect 'Rename Volume' menu item to the rename_volume dialog event */
+  g_signal_connect(G_OBJECT(renameVolumeMi), "activate", G_CALLBACK(rename_volume), (gpointer)"renameVolumeMi");
+
+  /* connect 'Convert to disk image' menu item to the convert_to_disk_image dialog event */
+  g_signal_connect(G_OBJECT(convertToDiskImageMi), "activate", G_CALLBACK(convert_to_disk_image), (gpointer)"convertToDiskImageMi");
+
+  /* connect 'Convert to archive file' menu item to the convert_to_archive_file dialog event */
+  g_signal_connect(G_OBJECT(convertToArchiveFileMi), "activate", G_CALLBACK(convert_to_archive_file), (gpointer)"convertToArchiveFileMi");
+
+  /* connect 'Import File from WAV menu item to the import_file_from_wav dialog event */
+  g_signal_connect(G_OBJECT(importFileFromWAVMi), "activate", G_CALLBACK(import_file_from_wav), (gpointer)"importFileFromWAVMi");
+
+  /* connect 'Import BAS from Text menu item to the import_bas_from_text dialog event */
+  g_signal_connect(G_OBJECT(importBASFromTextMi), "activate", G_CALLBACK(import_bas_from_text), (gpointer)"importBASFromTextMi");
+
   /* connect 'edit comment' menu item to the edit comment dialog event */
   g_signal_connect(G_OBJECT(editCommentMi), "activate", G_CALLBACK(edit_comment), (gpointer)"editCommentMi");
+
+  /* connect 'contents' menu item to the contents box event */
+  g_signal_connect(G_OBJECT(contentsMi), "activate", G_CALLBACK(contents), (gpointer)"contentsMi");
+
+  /* connect 'contents' menu item to the contents box event */
+  g_signal_connect(G_OBJECT(visitCalvadosWebsiteMi), "activate", G_CALLBACK(visit_website), (gpointer)"visitCalvadosWebsiteMi");
 
   /* connect 'about' menu item to the about box event */
   g_signal_connect(G_OBJECT(aboutCalvadosMi), "activate", G_CALLBACK(show_about), (gpointer)"aboutCalvadosMi");
@@ -657,8 +702,20 @@ int main(int argc, char *argv[])
   /* connect 'Select bulk disk image converter' menu item to the bulk disk image converter popup menu event */
   g_signal_connect(G_OBJECT(bulkDiskImageConverterMi), "activate", G_CALLBACK(bulk_disk_image_converter), (gpointer)"bulkDiskImageConverterMi");
 
+  /* connect 'Volume Copier Open Volume' menu item to the volume copier open volume popup menu event */
+  g_signal_connect(G_OBJECT(volumeCopierOpenVolumeMi), "activate", G_CALLBACK(volume_copier_open_volume), (gpointer)"volumeCopierOpenVolumeMi");
+
+  /* connect 'Volume Copier Open File' menu item to the volume copier open file popup menu event */
+  g_signal_connect(G_OBJECT(volumeCopierOpenFileMi), "activate", G_CALLBACK(volume_copier_open_file), (gpointer)"volumeCopierOpenFileMi");
+
   /* connect 'Merge SST Images' menu item to the merge sst images popup menu event */
   g_signal_connect(G_OBJECT(mergeSSTImagesMi), "activate", G_CALLBACK(select_first_sst_image), (gpointer)"mergeSSTImagesMi");
+
+  /* connect '2MG Properties Editor' menu item to the 2MG properties editor popup menu event */
+  g_signal_connect(G_OBJECT(twoMGPropertiesEditorMi), "activate", G_CALLBACK(twomg_properties_editor), (gpointer)"twoMGPropertiesEditorMi");
+
+  /* connect 'EOL Scanner' menu item to the eol scanner popup menu event */
+  g_signal_connect(G_OBJECT(EOLScannerMi), "activate", G_CALLBACK(eol_scanner), (gpointer)"EOLScannerMi");
 
   /* Connect 'quit' menu item to the window's "destroy" event */
   g_signal_connect(G_OBJECT(quitMi), "activate", G_CALLBACK(gtk_main_quit), (gpointer)"quitMi");

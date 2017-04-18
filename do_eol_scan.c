@@ -4,21 +4,17 @@
 
 #include "calvados.h"
 
-extern char *open_file_ptr;
-
 /* 
  *
- * do_open_file()
+ * do_eol_scan()
  *
- * Open a file.
+ * eol scan a file.
  *
  */
-void do_open_file(char *filename)
+void do_eol_scan(char *filename)
 {
   /* --- Display message --- */
-  g_print("Open file function goes here.\n");
+  g_print("eol scan function goes here.\n");
   g_print("filename=%s\n", filename);
-
-  strcpy(open_file_ptr, filename);
 }
 

@@ -5,12 +5,12 @@
 
 /*
  *
- * select_volume()
+ * volume_copier_open_volume()
  *
- * Select volume dialog box
+ * volume_copier_open_volume Volume from the menu.
  *
  */
-void select_volume(GtkWidget *widget, gpointer data)
+void volume_copier_open_volume(GtkWidget *widget, gpointer data)
 {
   GtkWidget *dialog;
   GtkWidget *ok_button;
@@ -27,7 +27,10 @@ void select_volume(GtkWidget *widget, gpointer data)
   GtkWidget *view;
   GtkWidget *openAsReadOnlyCb;
 
-  g_print("data=%s\n", (char *)data);
+  /* --- Display message --- */
+  /*g_print("volume_copier_open_volume function goes here.\n");*/
+
+  /*g_print("data=%s\n", (char *)data);*/
 
   /* --- Create the dialog --- */
   dialog = gtk_dialog_new();
@@ -82,7 +85,6 @@ void select_volume(GtkWidget *widget, gpointer data)
   store = gtk_list_store_new(NUM_SELECT_VOLUME_COLS, G_TYPE_STRING, G_TYPE_UINT);
 
 /*FIXME*/
-  /* This needs to be in a loop reading from somewhere */
   /* Append a row and fill in some data */
   /*gtk_list_store_append(store, &iter);
   gtk_list_store_set(store, &iter,
@@ -139,7 +141,7 @@ void select_volume(GtkWidget *widget, gpointer data)
   ok_button = gtk_button_new_with_label("OK");
 
   gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-                     GTK_SIGNAL_FUNC(okfunc_select_volume),
+                     GTK_SIGNAL_FUNC(okfunc_volume_copier_open_volume),
                      dialog);
 
   /* --- Allow "Cancel" to be a default --- */
@@ -182,7 +184,7 @@ void select_volume(GtkWidget *widget, gpointer data)
   help_button = gtk_button_new_with_label("Help");
 
   gtk_signal_connect(GTK_OBJECT(help_button), "clicked",
-                     GTK_SIGNAL_FUNC(help_func_select_volume),
+                     GTK_SIGNAL_FUNC(help_func_volume_copier_open_volume),
                      dialog);
 
   /* --- Add the "Help" button to the dialog --- */

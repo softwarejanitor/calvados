@@ -3,12 +3,22 @@
 
 #include "calvados.h"
 
+/*
+ *
+ * fileAttributePreservationRbCallback()
+ *
+ */
 void fileAttributePreservationRbCallback(GtkWidget *widget, gpointer *data)
 {
   g_print("clicked %s\n", (char *)data);
 }
 
 
+/*
+ *
+ * textConversionRbCallback()
+ *
+ */
 void textConversionRbCallback(GtkWidget *widget, gpointer *data)
 {
   g_print("clicked %s\n", (char *)data);

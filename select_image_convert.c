@@ -15,7 +15,7 @@ void select_image_convert(GtkWidget *widget, gpointer data)
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
 
-  g_print("Select image convert goes here\n");
+  /*g_print("Select image convert goes here\n");*/
 
   diskImagesFilt = gtk_file_filter_new();
   gtk_file_filter_set_name(diskImagesFilt, "Disk Images");

@@ -4,21 +4,17 @@
 
 #include "calvados.h"
 
-extern char *open_file_ptr;
-
 /* 
  *
- * do_open_file()
+ * do_2mg_edit()
  *
- * Open a file.
+ * Edit a 2mg disk image
  *
  */
-void do_open_file(char *filename)
+void do_2mg_edit(char *filename)
 {
   /* --- Display message --- */
-  g_print("Open file function goes here.\n");
+  g_print("2mg edit function goes here.\n");
   g_print("filename=%s\n", filename);
-
-  strcpy(open_file_ptr, filename);
 }
 
