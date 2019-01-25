@@ -245,21 +245,30 @@ void preferences()
   GtkWidget *viewerFileSizeSpinner;
   GtkWidget *kBytesLabel;
   GtkWidget *conversionOptionsVbox;
+  GSList *compressionRbGroup = NULL;
   GtkWidget *defaultCompressionMethodLabel;
-  GtkWidget *noCompressionCb;
-  GtkWidget *squeezeCb;
+  /*GtkWidget *noCompressionCb;*/
+  GtkWidget *noCompressionRb;
+  /*GtkWidget *squeezeCb;*/
+  GtkWidget *squeezeRb;
   GtkWidget *squeezeLabel;
-  GtkWidget *dynamicLZW1Cb;
+  /*GtkWidget *dynamicLZW1Cb;*/
+  GtkWidget *dynamicLZW1Rb;
   GtkWidget *dynamicLZW1Label;
-  GtkWidget *dynamicLZW2Cb;
+  /*GtkWidget *dynamicLZW2Cb;*/
+  GtkWidget *dynamicLZW2Rb;
   GtkWidget *dynamicLZW2Label;
-  GtkWidget *twelveBitLZCCb;
+  /*GtkWidget *twelveBitLZCCb;*/
+  GtkWidget *twelveBitLZCRb;
   GtkWidget *twelveBitLZCLabel;
-  GtkWidget *sixteenBitLZCCb;
+  /*GtkWidget *sixteenBitLZCCb;*/
+  GtkWidget *sixteenBitLZCRb;
   GtkWidget *sixteenBitLZCLabel;
-  GtkWidget *deflateCb;
+  /*GtkWidget *deflateCb;*/
+  GtkWidget *deflateRb;
   GtkWidget *deflateLabel;
-  GtkWidget *bzip2Cb;
+  /*GtkWidget *bzip2Cb;*/
+  GtkWidget *bzip2Rb;
   GtkWidget *bzip2Label;
   GtkWidget *filesVbox;
   GtkWidget *folderForTemporaryFilesHbox;
@@ -757,61 +766,70 @@ void preferences()
   gtk_widget_show(defaultCompressionMethodLabel);
   gtk_box_pack_start(GTK_BOX(compressionVbox), defaultCompressionMethodLabel, TRUE, TRUE, 0);
 
-  noCompressionCb = gtk_check_button_new_with_label("No compression");
+/* FIXME -- needs to be radio button */
+  /*noCompressionCb = gtk_check_button_new_with_label("No compression");
   gtk_box_pack_start(GTK_BOX(compressionVbox), noCompressionCb, TRUE, TRUE, 0);
-  gtk_widget_show(noCompressionCb);
+  gtk_widget_show(noCompressionCb);*/
+  noCompressionRb = create_radio(compressionVbox, &compressionRbGroup, "No compression");
 
-  squeezeCb = gtk_check_button_new_with_label("Squeeze");
+  /*squeezeCb = gtk_check_button_new_with_label("Squeeze");
   gtk_box_pack_start(GTK_BOX(compressionVbox), squeezeCb, TRUE, TRUE, 0);
-  gtk_widget_show(squeezeCb);
+  gtk_widget_show(squeezeCb);*/
+  squeezeRb = create_radio(compressionVbox, &compressionRbGroup, "Squeeze");
 
   squeezeLabel = gtk_label_new("Uses a combination of RLE and Huffman.\rNot compatible with ProDOS 8 ShrinkIt.");
   gtk_box_pack_start(GTK_BOX(compressionVbox), squeezeLabel, TRUE, TRUE, 0);
   gtk_widget_show(squeezeLabel);
 
-  dynamicLZW1Cb = gtk_check_button_new_with_label("Dynamic LZW/1");
+  /*dynamicLZW1Cb = gtk_check_button_new_with_label("Dynamic LZW/1");
   gtk_box_pack_start(GTK_BOX(compressionVbox), dynamicLZW1Cb, TRUE, TRUE, 0);
-  gtk_widget_show(dynamicLZW1Cb);
+  gtk_widget_show(dynamicLZW1Cb);*/
+  dynamicLZW1Rb = create_radio(compressionVbox, &compressionRbGroup, "Dynamic LZW/1");
 
   dynamicLZW1Label = gtk_label_new("The compression method used by ProDOS 8 ShrinkIt.");
   gtk_box_pack_start(GTK_BOX(compressionVbox), dynamicLZW1Label, TRUE, TRUE, 0);
   gtk_widget_show(dynamicLZW1Label);
 
-  dynamicLZW2Cb = gtk_check_button_new_with_label("Dynamic LZW/2 (recommended)");
+  /*dynamicLZW2Cb = gtk_check_button_new_with_label("Dynamic LZW/2 (recommended)");
   gtk_box_pack_start(GTK_BOX(compressionVbox), dynamicLZW2Cb, TRUE, TRUE, 0);
-  gtk_widget_show(dynamicLZW2Cb);
+  gtk_widget_show(dynamicLZW2Cb);*/
+  dynamicLZW2Rb = create_radio(compressionVbox, &compressionRbGroup, "Dynamic LZW/2 (recommended)");
 
   dynamicLZW2Label = gtk_label_new("The compression method used by GS/ShrinkIt");
   gtk_box_pack_start(GTK_BOX(compressionVbox), dynamicLZW2Label, TRUE, TRUE, 0);
   gtk_widget_show(dynamicLZW2Label);
 
-  twelveBitLZCCb = gtk_check_button_new_with_label("12-bit LZC");
+  /*twelveBitLZCCb = gtk_check_button_new_with_label("12-bit LZC");
   gtk_box_pack_start(GTK_BOX(compressionVbox), twelveBitLZCCb, TRUE, TRUE, 0);
-  gtk_widget_show(twelveBitLZCCb);
+  gtk_widget_show(twelveBitLZCCb);*/
+  twelveBitLZCRb = create_radio(compressionVbox, &compressionRbGroup, "12-bit LZC");
 
   twelveBitLZCLabel = gtk_label_new("Compression used by UNIX \"compress\" command.\rNot compatible with ProDOS 8 ShrinkIt.");
   gtk_box_pack_start(GTK_BOX(compressionVbox), twelveBitLZCLabel, TRUE, TRUE, 0);
   gtk_widget_show(twelveBitLZCLabel);
 
-  sixteenBitLZCCb = gtk_check_button_new_with_label("16-bit LZC");
+  /*sixteenBitLZCCb = gtk_check_button_new_with_label("16-bit LZC");
   gtk_box_pack_start(GTK_BOX(compressionVbox), sixteenBitLZCCb, TRUE, TRUE, 0);
-  gtk_widget_show(sixteenBitLZCCb);
+  gtk_widget_show(sixteenBitLZCCb);*/
+  sixteenBitLZCRb = create_radio(compressionVbox, &compressionRbGroup, "16-bit LZC");
 
   sixteenBitLZCLabel = gtk_label_new("Compression used by UNIX \"compress\" command.\rNot compatible with ProDOS 8 ShrinkIt.");
   gtk_box_pack_start(GTK_BOX(compressionVbox), sixteenBitLZCLabel, TRUE, TRUE, 0);
   gtk_widget_show(sixteenBitLZCLabel);
 
-  deflateCb = gtk_check_button_new_with_label("deflate");
+  /*deflateCb = gtk_check_button_new_with_label("deflate");
   gtk_box_pack_start(GTK_BOX(compressionVbox), deflateCb, TRUE, TRUE, 0);
-  gtk_widget_show(deflateCb);
+  gtk_widget_show(deflateCb);*/
+  deflateRb = create_radio(compressionVbox, &compressionRbGroup, "deflate");
 
   deflateLabel = gtk_label_new("Uses a combination of RLE and Huffman.\rNot compatible with ProDOS 8 ShrinkIt.");
   gtk_box_pack_start(GTK_BOX(compressionVbox), deflateLabel, TRUE, TRUE, 0);
   gtk_widget_show(deflateLabel);
 
-  bzip2Cb = gtk_check_button_new_with_label("Bzip2");
+  /*bzip2Cb = gtk_check_button_new_with_label("Bzip2");
   gtk_box_pack_start(GTK_BOX(compressionVbox), bzip2Cb, TRUE, TRUE, 0);
-  gtk_widget_show(bzip2Cb);
+  gtk_widget_show(bzip2Cb);*/
+  bzip2Rb = create_radio(compressionVbox, &compressionRbGroup, "Bzip2");
 
   bzip2Label = gtk_label_new("Compression used by bzip2.\rNot compatible with any Apple II applications.");
   gtk_box_pack_start(GTK_BOX(compressionVbox), bzip2Label, TRUE, TRUE, 0);

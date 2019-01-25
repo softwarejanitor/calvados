@@ -13,6 +13,14 @@ GtkWidget *hfsVolumeEntry;
 GtkWidget *blocksEntry;
 GtkWidget *blocksLabel;
 
+GtkWidget *s140kRb;
+GtkWidget *s800kRb;
+GtkWidget *s14MRb;
+GtkWidget *s5MBRb;
+GtkWidget *s16MBRb;
+GtkWidget *s20MBRb;
+GtkWidget *s32MBRb;
+
 /*
  *
  * Grey out radio buttons, checkboxes and entries as appropriate
@@ -103,13 +111,13 @@ void create_disk_image()
   GtkWidget *hfsRb;
   GtkWidget *blankRb;
   GSList *filesystemRbGroup = NULL;
-  GtkWidget *s140kRb;
+  /*GtkWidget *s140kRb;
   GtkWidget *s800kRb;
   GtkWidget *s14MRb;
   GtkWidget *s5MBRb;
   GtkWidget *s16MBRb;
   GtkWidget *s20MBRb;
-  GtkWidget *s32MBRb;
+  GtkWidget *s32MBRb;*/
   GtkWidget *specifyHbox;
   GtkWidget *specifyRb;
   GSList *newDiskSizeRbGroup = NULL;

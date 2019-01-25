@@ -19,6 +19,6 @@ void do_open_file(char *filename)
   g_print("Open file function goes here.\n");
   g_print("filename=%s\n", filename);
 
-  strcpy(open_file_ptr, filename);
+  strncpy(open_file_ptr, filename, 255);
 }
 

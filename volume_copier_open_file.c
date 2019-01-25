@@ -16,6 +16,7 @@ void volume_copier_open_file(GtkWidget *widget, gpointer data)
   gint res;
   GtkFileFilter *diskImagesFilt;
   GtkFileFilter *allFilesFilt;
+  GtkWidget *openAsReadOnlyCb;
 
   /* --- Display message --- */
   /*g_print("volume_copier_open_file function goes here.\n");*/
@@ -58,6 +59,10 @@ void volume_copier_open_file(GtkWidget *widget, gpointer data)
 
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), diskImagesFilt);
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), allFilesFilt);
+
+  openAsReadOnlyCb = gtk_check_button_new_with_label("Open as read-only");
+  gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area), openAsReadOnlyCb, TRUE, TRUE, 0);
+  gtk_widget_show(openAsReadOnlyCb);
 
   res = gtk_dialog_run(GTK_DIALOG(dialog));
   if (res == GTK_RESPONSE_ACCEPT) {
